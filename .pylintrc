@@ -1,0 +1,12 @@
+[DESIGN]
+
+module-naming-style=snake_case
+function-naming-style=camelCase
+class-naming-style=PascalCase
+argument-naming-style=camelCase
+variable-naming-style=camelCase
+
+[MESSAGES CONTROL]
+
+disable=
+    missing-docstring
