@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+service DistributedFileSystem {
+  rpc ReadFile(ReadRequest) returns (ReadResponse) {}
+
+  rpc ListFiles(ListRequest) returns (ListResponse) {}
+
+  rpc UpdateFile(UpdateRequest) returns (UpdateResponse) {}
+
+  rpc GrantPermisions(PermissionRequest) returns (PermissionResponse) {}
+
+  rpc CreateFile(CreateRequest) returns (CreateResponse) {}
+
+  rpc DeleteFile(DeleteRequest) returns (DeleteResponse) {}
+}
+
+message ReadRequest {
+}
+
+message ReadResponse {
+}
+
+message ListRequest{
+}
+
+message ListResponse{
+}
+
+message UpdateRequest{
+}
+
+message UpdateResponse{
+}
+
+message PermissionRequest{
+}
+
+message PermissionResponse{
+}
+
+message CreateRequest{
+}
+
+message CreateResponse{
+}
+
+message DeleteRequest{
+}
+
+message DeleteResponse{
+}
