@@ -1,8 +1,9 @@
 import database.db as db
 
 add_owned_file_details = ("INSERT INTO owned_file_details"
-                            " (file_id, path, en_file_name, public_key, private_key)"
-                            " VALUES (%s, %s, %s, %s, %s)")
+                          " (file_id, path, en_file_name, public_key, private_key)"
+                          " VALUES (%s, %s, %s, %s, %s)")
+
 
 class DfsDB:
     def __init__(self, db_name):

@@ -2,8 +2,9 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Random import get_random_bytes
 
-# Generates a RSA key pair.
+
 def create_rsa_key_pair():
+    # Generates a RSA key pair.
     key = RSA.generate(2048)
 
     private_key = key.export_key().decode("utf-8")
