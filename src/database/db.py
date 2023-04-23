@@ -1,7 +1,7 @@
 import mysql.connector
 
 from mysql.connector import errorcode
-from table_schemas import TABLES
+from database.table_schemas import TABLES
 
 
 def db_connection(db_user="pcs", db_pswd=""):
@@ -50,6 +50,3 @@ def create_dfs_tables(cursor):
         else:
             print("OK")
 
-
-conn, cursor = db_conn("test")
-create_dfs_tables(cursor)
