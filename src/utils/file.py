@@ -11,6 +11,11 @@ def form_file_path(file_id):
 
 
 def store_file_to_fs(file_path, file_content):
-    fd = open(file_path, "w")
+    fd = open(file_path, "wb")
     fd.write(file_content)
     fd.close()
+
+
+def read_file(file_path):
+    fd = open(file_path, "rb")
+    return fd.read()

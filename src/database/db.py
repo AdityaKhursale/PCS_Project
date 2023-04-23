@@ -1,7 +1,6 @@
 import mysql.connector
 
 from mysql.connector import errorcode
-from database.table_schemas import TABLES
 
 
 def db_connection(db_user="pcs", db_pswd=""):
@@ -33,20 +32,7 @@ def db_conn(db_name):
             print(err)
             exit(1)
 
-    return conn, cursor
+    cursor.close()
+    return conn
 
-
-def create_dfs_tables(cursor):
-    for table_name in TABLES:
-        table_description = TABLES[table_name]
-        try:
-            print("Creating table {}: ".format(table_name), end='')
-            cursor.execute(table_description)
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("\n\t -> already exists.")
-            else:
-                print(err.msg)
-        else:
-            print("OK")
 

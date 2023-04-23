@@ -12,7 +12,9 @@ def init_env():
     global dir_path
     global host_name
     global db_instance
+    global ip_addr
 
     dir_path = "/home/gaurav/Documents/"
     host_name = "host1"
     db_instance = DfsDB(host_name)
+    ip_addr = "0.0.0.0"
