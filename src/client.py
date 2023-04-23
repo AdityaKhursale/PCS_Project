@@ -1,5 +1,6 @@
 # import grpc
 import re
+import sys
 
 # from distributed_fs import distributed_fs_pb2
 # from distributed_fs import distributed_fs_pb2_grpc
@@ -17,7 +18,8 @@ class Action:
 class Operations:
     @staticmethod
     def printHelp(**kwargs):
-        help = """
+        # pylint: disable=unused-argument
+        helpMenu = """
             print help          help
             create file         create <filename>
             read file           read <filename>
@@ -27,7 +29,7 @@ class Operations:
             grant permissions   <TODO: Update me>
             exit client         exit
         """
-        print(help)
+        print(helpMenu)
 
     @staticmethod
     def createFile(**kwargs):
@@ -66,17 +68,18 @@ class Client:
             'read': Operations.readFile,
             'update': Operations.updateFile,
             'delete': Operations.deleteFile,
-            'exit': lambda **kwargs: exit(0)
+            'exit': lambda **kwargs: sys.exit(0)
         }
 
     @classmethod
     def getAction(cls):
         userInput = input()
-        regex = r"^(?P<command>[a-z]+)\s*(?P<filename>[\w\-. ]*)(?P<options>.*)"
+        regex = r"^(?P<command>[a-z]+)\s*(?P<filename>[\w\-. ]*)" \
+                r"(?P<options>.*)"
         match = re.search(regex, userInput)
         if not match:
             print("Invalid command!")
-            return
+            return Action("Invalid")
         return Action(
             match.group("command"), match.group("filename"),
             match.group("options")

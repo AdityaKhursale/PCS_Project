@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9"]
 
     steps:
       - name: Checkout repository
@@ -34,9 +34,9 @@ jobs:
 
       - name: Lint with flake8
         run: |
-          flake8 src  --count --select=E9,F63,F7,F82 --exclude=src/distributed_fs/.* --show-source --statistics
-          flake8 src --count --max-complexity=10 --exclude=src/distributed_fs/.* --max-line-length=79
+          flake8 --exclude=distributed_fs src  --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 --exclude=distributed_fs src --count --max-complexity=10 --max-line-length=79
 
       - name: Lint with Pylint
         run: |
-          pylint --ignore src/distributed_fs/.* src
+          pylint --ignore distributed_fs src

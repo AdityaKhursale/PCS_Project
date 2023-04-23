@@ -44,7 +44,7 @@ def create_dfs_tables(cursor):
             cursor.execute(table_description)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print(f"\n\t -> already exists.")
+                print("\n\t -> already exists.")
             else:
                 print(err.msg)
         else:
