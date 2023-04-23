@@ -29,4 +29,3 @@ def read_encrypted_file(file_id):
         file_details['private_key'], encrypted_data)
 
     return decrypted_data
-

@@ -7,14 +7,13 @@ CONFIG_PATH = "configs"
 NETWORK_CFG = os.path.join(CONFIG_PATH, NETWORK_CFG_FILE)
 
 
-def init_env():
-    # @TODO Set the hard-coded values correctly.
+def init_env(ip_address, host):
     global dir_path
     global host_name
     global db_instance
     global ip_addr
 
-    dir_path = "/home/gaurav/Documents/"
-    host_name = "host1"
+    host_name = host
+    ip_addr = ip_address
+    dir_path = "assets/" + host_name
     db_instance = DfsDB(host_name)
-    ip_addr = "0.0.0.0"

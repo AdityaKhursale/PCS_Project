@@ -34,5 +34,3 @@ def db_conn(db_name):
 
     cursor.close()
     return conn
-
-
