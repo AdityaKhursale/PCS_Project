@@ -1,7 +1,7 @@
 from utils.constants import NETWORK_CFG
 
 
-def get_nodes():
+def getNodes():
     nodes = []
     with open(NETWORK_CFG, "r") as f:
         for node in f.readlines():
@@ -9,8 +9,8 @@ def get_nodes():
     return nodes
 
 
-def get_nodes_except(node):
-    nodes = get_nodes()
+def getNodesExcept(node):
+    nodes = getNodes()
     if node in nodes:
         nodes.remove(node)
     return nodes

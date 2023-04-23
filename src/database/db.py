@@ -1,10 +1,12 @@
 import mysql.connector
+
 from mysql.connector import errorcode
 from table_schemas import TABLES
 
 
 def db_connection(db_user="pcs", db_pswd=""):
-    conn = mysql.connector.connect(user=db_user, password = db_pswd, host = "localhost")
+    conn = mysql.connector.connect(
+        user=db_user, password=db_pswd, host="localhost")
     return conn, conn.cursor()
 
 
@@ -47,6 +49,7 @@ def create_dfs_tables(cursor):
                 print(err.msg)
         else:
             print("OK")
+
 
 conn, cursor = db_conn("test")
 create_dfs_tables(cursor)

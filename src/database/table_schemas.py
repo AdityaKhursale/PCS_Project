@@ -1,4 +1,4 @@
-TABLES={}
+TABLES = {}
 
 TABLES['owned_filed_details'] = (
     "CREATE TABLE `file_details` ("
