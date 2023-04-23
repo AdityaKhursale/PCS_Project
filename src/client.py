@@ -1,11 +1,8 @@
-from __future__ import print_function
-
 import logging
-import random
-
 import grpc
-import distributed_fs_pb2
-import distributed_fs_pb2_grpc
+
+from distributed_fs import distributed_fs_pb2
+from distributed_fs import distributed_fs_pb2_grpc
 
 
 def run():
