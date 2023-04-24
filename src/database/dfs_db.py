@@ -6,7 +6,6 @@ from database.table_schemas import TABLES
 
 add_owned_files = ("INSERT INTO owned_files (file_id) VALUES (%s)")
 
-
 add_file_details = ("INSERT INTO file_details"
                     " (file_id, en_file_name, owner, path, public_key,"
                     " private_key)"
@@ -26,6 +25,17 @@ query_all_owned_files = ("SELECT file_id FROM owned_files")
 
 query_all_shared_files = ("SELECT file_id, permission_write"
                           " FROM replicated_file_permissions")
+
+delete_from_owned_files = ("DELETE FROM owned_files WHERE file_id = %s")
+
+delete_from_replicated_files = ("DELETE FROM"
+                                " replicated_files WHERE file_id = %s")
+
+delete_from_replicated_file_permissions = ("DELETE FROM"
+                                           " replicated_file_permissions"
+                                           " WHERE file_id = %s")
+
+delete_from_file_details = ("DELETE FROM file_details WHERE file_details = %s")
 
 
 class DfsDB:
@@ -118,3 +128,14 @@ class DfsDB:
 
         cursor.close()
         return shared_files
+
+    def delete_file_entry(self, file_id):
+        cursor = self.db_conn.cursor()
+
+        cursor.execute(delete_from_owned_files, [file_id])
+        cursor.execute(delete_from_replicated_files, [file_id])
+        cursor.execute(delete_from_replicated_file_permissions, [file_id])
+        cursor.execute(delete_from_file_details, [file_id])
+
+        self.db_conn.commit()
+        cursor.close()

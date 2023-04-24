@@ -3,6 +3,7 @@ import base64
 import distributed_fs.distributed_fs_pb2 as pb
 import grpc
 import utils.constants as constants
+import utils.file
 
 
 from concurrent import futures
@@ -21,6 +22,18 @@ class DfsServer(DistributedFileSystemServicer):
             ip_address, hostname, public_key)
 
         return pb.UpdateKeyResponse(status="Success!")
+
+    def DeleteFile(self, request, context):
+        file_id = request.fileId
+        file_details = constants.db_instance.get_file_details(file_id)
+
+        # @TODO: Check if the request is from the file owner.
+
+        # Delete the file and clear relevant entries from the database.
+        utils.file.delete_file(file_details['file_path'])
+        constants.db_instance.delete_file_entry(file_id)
+
+        return pb.DeleteResponse(status="Success!")
 
 
 def serve(ip_address):

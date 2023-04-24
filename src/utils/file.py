@@ -26,3 +26,7 @@ def read_file(file_path):
 
 def create_file_path(file_path):
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+
+def delete_file(file_path):
+    os.remove(file_path)

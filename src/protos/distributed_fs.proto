@@ -48,9 +48,11 @@ message CreateResponse{
 }
 
 message DeleteRequest{
+  string fileId = 1;
 }
 
 message DeleteResponse{
+  string status = 1;
 }
 
 message UpdateKeyRequest {
