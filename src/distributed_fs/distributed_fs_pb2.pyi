@@ -42,13 +42,22 @@ class ListResponse(_message.Message):
 
 
 class PermissionRequest(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
+    __slots__ = ["fileId", "filePrivateKey", "filePublicKey"]
+    FILEID_FIELD_NUMBER: _ClassVar[int]
+    FILEPRIVATEKEY_FIELD_NUMBER: _ClassVar[int]
+    FILEPUBLICKEY_FIELD_NUMBER: _ClassVar[int]
+    fileId: str
+    filePrivateKey: str
+    filePublicKey: str
+    def __init__(self, fileId: _Optional[str] = ..., filePublicKey: _Optional[str]
+                 = ..., filePrivateKey: _Optional[str] = ...) -> None: ...
 
 
 class PermissionResponse(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
 
 
 class ReadRequest(_message.Message):

@@ -35,9 +35,13 @@ message UpdateResponse{
 }
 
 message PermissionRequest{
+  string fileId = 1;
+  string filePublicKey = 2;
+  string filePrivateKey = 3;
 }
 
 message PermissionResponse{
+  string status = 1;
 }
 
 message CreateRequest{

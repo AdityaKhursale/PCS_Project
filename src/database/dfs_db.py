@@ -37,6 +37,16 @@ delete_from_replicated_file_permissions = ("DELETE FROM"
 
 delete_from_file_details = ("DELETE FROM file_details WHERE file_details = %s")
 
+add_or_update_permission_entry = ("INSERT INTO replicated_file_permissions"
+                                  " (file_id, permission_write)"
+                                  " VALUES (%s, %d)"
+                                  " ON DUPLICATE KEY UPDATE"
+                                  " permission_write=%d")
+
+update_file_details = ("UPDATE file_details"
+                       " SET public_key = %s, private_key = %s"
+                       " WHERE file_id = %s")
+
 
 class DfsDB:
     def __init__(self, db_name):
@@ -136,6 +146,24 @@ class DfsDB:
         cursor.execute(delete_from_replicated_files, [file_id])
         cursor.execute(delete_from_replicated_file_permissions, [file_id])
         cursor.execute(delete_from_file_details, [file_id])
+
+        self.db_conn.commit()
+        cursor.close()
+
+    def add_permission_entry(self, file_id, is_write_permission):
+        cursor = self.db_conn.cursor()
+
+        permission_info = (file_id, is_write_permission, is_write_permission)
+        cursor.execute(add_or_update_permission_entry, permission_info)
+
+        self.db_conn.commit()
+        cursor.close()
+
+    def update_file_details(self, file_id, private_key, public_key):
+        cursor = self.db_conn.cursor()
+
+        file_info = (public_key, private_key, file_id)
+        cursor.execute(update_file_details, file_info)
 
         self.db_conn.commit()
         cursor.close()

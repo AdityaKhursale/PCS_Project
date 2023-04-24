@@ -22,11 +22,15 @@ def encrypt_data(public_key, data):
     return encrypted_data
 
 
-def decrypt_data(private_key, encrypted_data):
+def decrypt_data_binary(private_key, encrypted_data):
     public_key_obj = RSA.import_key(private_key)
     cipher = PKCS1_OAEP.new(public_key_obj)
     decrypted_data = cipher.decrypt(encrypted_data)
-    return decrypted_data.decode("utf-8")
+    return decrypted_data
+
+
+def decrypt_data(private_key, encrypted_data):
+    return decrypt_data_binary(private_key, encrypted_data).decode("utf-8")
 
 
 def create_node_rsa_key_pair():
@@ -39,3 +43,8 @@ def create_node_rsa_key_pair():
     utils.file.store_file_to_fs(public_key_path, public_key)
 
     return private_key, public_key
+
+
+def get_node_private_key():
+    private_key_path = constants.dir_path + "private_key"
+    return utils.file.read_file(private_key_path)
