@@ -41,6 +41,7 @@ message PermissionResponse{
 }
 
 message CreateRequest{
+  string filename = 1;
 }
 
 message CreateResponse{

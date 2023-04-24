@@ -2,7 +2,8 @@
 import re
 import sys
 
-# from distributed_fs import distributed_fs_pb2
+from utils.decorators import useDistributedFileSystemStub
+from distributed_fs import distributed_fs_pb2
 # from distributed_fs import distributed_fs_pb2_grpc
 
 # TODO: Use better naming
@@ -31,9 +32,13 @@ class Operations:
         """
         print(helpMenu)
 
+    # TODO: Check if server selection needs to be external and update
     @staticmethod
+    @useDistributedFileSystemStub("localhost:50051")
     def createFile(**kwargs):
-        pass
+        stub = kwargs["stub"]
+        stub.CreateFile(distributed_fs_pb2.CreateRequest(
+            filename=kwargs['filename']))
 
     @staticmethod
     def readFile(**kwargs):

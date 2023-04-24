@@ -2,9 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from concurrent import futures
 import distributed_fs.distributed_fs_pb2 as distributed__fs__pb2
-import distributed_fs.distributed_fs_pb2_grpc
 
 
 class DistributedFileSystemStub(object):

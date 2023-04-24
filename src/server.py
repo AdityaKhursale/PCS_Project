@@ -8,6 +8,7 @@ import utils.constants as constants
 from concurrent import futures
 from distributed_fs.distributed_fs_pb2_grpc import (
     add_DistributedFileSystemServicer_to_server, DistributedFileSystemServicer)
+from distributed_fs.distributed_fs_service import DistributedFileSystemService
 
 
 class DfsServer(DistributedFileSystemServicer):
@@ -25,7 +26,7 @@ class DfsServer(DistributedFileSystemServicer):
 def serve(ip_address):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_DistributedFileSystemServicer_to_server(
-        DistributedFileSystemServicer(), server
+        DistributedFileSystemService(), server
     )
     server.add_insecure_port(ip_address)
     server.start()
@@ -34,11 +35,11 @@ def serve(ip_address):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--address", help="IP Address")
-    parser.add_argument("--hostname", help="Host name")
+    parser.add_argument("--address", help="IP Address", default="[::]:50051")
+    parser.add_argument("--hostname", help="Host name", default="localhost")
     args = parser.parse_args()
 
     # Set up the enviornment variables.
-    constants.init_env(args.address, args.hostname)
+    # constants.init_env(args.address, args.hostname)
 
     serve(args.address)
