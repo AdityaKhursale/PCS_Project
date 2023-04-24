@@ -99,8 +99,8 @@ class DfsDB:
         cursor = self.db_conn.cursor()
         cursor.execute(query_all_owned_files)
 
-        for (file_id) in cursor:
-            owned_files.append(file_id)
+        for row in cursor:
+            owned_files.append(row[0])
 
         cursor.close()
         return owned_files
@@ -110,10 +110,10 @@ class DfsDB:
         cursor = self.db_conn.cursor()
         cursor.execute(query_all_shared_files)
 
-        for (file_id, permission_write) in cursor:
+        for row in cursor:
             shared_files.append({
-                'file_id': file_id,
-                'write': permission_write
+                'file_id': row[0],
+                'write': row[1]
             })
 
         cursor.close()
