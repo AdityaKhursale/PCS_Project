@@ -15,5 +15,5 @@ def init_env(ip_address, host):
 
     host_name = host
     ip_addr = ip_address
-    dir_path = "assets/" + host_name
+    dir_path = "assets/" + host_name + "/"
     db_instance = DfsDB(host_name)
