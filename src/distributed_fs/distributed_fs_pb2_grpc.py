@@ -46,10 +46,10 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.DeleteRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.DeleteResponse.FromString,
         )
-        self.SharePublicKey = channel.unary_unary(
-            '/DistributedFileSystem/SharePublicKey',
-            request_serializer=distributed__fs__pb2.ShareKeyRequest.SerializeToString,
-            response_deserializer=distributed__fs__pb2.ShareKeyResponse.FromString,
+        self.UpdateNodePublicKey = channel.unary_unary(
+            '/DistributedFileSystem/UpdateNodePublicKey',
+            request_serializer=distributed__fs__pb2.UpdateKeyRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.UpdateKeyResponse.FromString,
         )
 
 
@@ -92,7 +92,7 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SharePublicKey(self, request, context):
+    def UpdateNodePublicKey(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -131,10 +131,10 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             request_deserializer=distributed__fs__pb2.DeleteRequest.FromString,
             response_serializer=distributed__fs__pb2.DeleteResponse.SerializeToString,
         ),
-        'SharePublicKey': grpc.unary_unary_rpc_method_handler(
-            servicer.SharePublicKey,
-            request_deserializer=distributed__fs__pb2.ShareKeyRequest.FromString,
-            response_serializer=distributed__fs__pb2.ShareKeyResponse.SerializeToString,
+        'UpdateNodePublicKey': grpc.unary_unary_rpc_method_handler(
+            servicer.UpdateNodePublicKey,
+            request_deserializer=distributed__fs__pb2.UpdateKeyRequest.FromString,
+            response_serializer=distributed__fs__pb2.UpdateKeyResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -250,18 +250,18 @@ class DistributedFileSystem(object):
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SharePublicKey(request,
-                       target,
-                       options=(),
-                       channel_credentials=None,
-                       call_credentials=None,
-                       insecure=False,
-                       compression=None,
-                       wait_for_ready=None,
-                       timeout=None,
-                       metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/SharePublicKey',
-                                             distributed__fs__pb2.ShareKeyRequest.SerializeToString,
-                                             distributed__fs__pb2.ShareKeyResponse.FromString,
+    def UpdateNodePublicKey(request,
+                            target,
+                            options=(),
+                            channel_credentials=None,
+                            call_credentials=None,
+                            insecure=False,
+                            compression=None,
+                            wait_for_ready=None,
+                            timeout=None,
+                            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/UpdateNodePublicKey',
+                                             distributed__fs__pb2.UpdateKeyRequest.SerializeToString,
+                                             distributed__fs__pb2.UpdateKeyResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

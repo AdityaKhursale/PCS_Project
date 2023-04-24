@@ -16,6 +16,12 @@ query_file_details = ("SELECT file_id, en_file_name, owner, path, public_key,"
                       " private_key FROM file_details"
                       " WHERE file_id = %s")
 
+add_or_update_node_details = ("INSERT INTO node_details"
+                              " (ip_address, hostname, public_key)"
+                              " VALUES (%s, %s, %s)"
+                              " ON DUPLICATE KEY UPDATE"
+                              " hostname=%s, public_key=%s")
+
 
 class DfsDB:
     def __init__(self, db_name):
@@ -73,3 +79,12 @@ class DfsDB:
         cursor.close()
 
         return file_details
+
+    def add_or_update_node_public_key(self, address, hostname, public_key):
+        cursor = self.db_conn.cursor()
+
+        node_info = (address, hostname, public_key, hostname, public_key)
+        cursor.execute(add_or_update_node_details, node_info)
+
+        self.db_conn.commit()
+        cursor.close()

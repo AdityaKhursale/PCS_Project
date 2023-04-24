@@ -13,7 +13,7 @@ service DistributedFileSystem {
 
   rpc DeleteFile(DeleteRequest) returns (DeleteResponse) {}
 
-  rpc SharePublicKey(ShareKeyRequest) returns (ShareKeyResponse) {}
+  rpc UpdateNodePublicKey(UpdateKeyRequest) returns (UpdateKeyResponse) {}
 }
 
 message ReadRequest {
@@ -52,12 +52,12 @@ message DeleteRequest{
 message DeleteResponse{
 }
 
-message ShareKeyRequest {
+message UpdateKeyRequest {
   string hostname = 1;
   string address = 2;
   string publicKey = 3;
 }
 
-message ShareKeyResponse {
+message UpdateKeyResponse {
   string status = 1;
 }

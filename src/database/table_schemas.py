@@ -29,3 +29,11 @@ TABLES['file_details'] = (
     " `private_key` varchar(2048),"
     "  PRIMARY KEY (`file_id`)"
     ") ENGINE=InnoDB")
+
+TABLES['node_details'] = (
+    "CREATE TABLE `node_details` ("
+    " `ip_address` varchar(256) NOT NULL,"
+    " `hostname` varchar(256) NOT NULL,"
+    " `public_key` varchar(2048),"
+    "  PRIMARY KEY (`ip_address`)"
+    ") ENGINE=InnoDB")
