@@ -22,6 +22,11 @@ add_or_update_node_details = ("INSERT INTO node_details"
                               " ON DUPLICATE KEY UPDATE"
                               " hostname=%s, public_key=%s")
 
+query_all_owned_files = ("SELECT file_id FROM owned_files")
+
+query_all_shared_files = ("SELECT file_id, permission_write"
+                          " FROM replicated_file_permissions")
+
 
 class DfsDB:
     def __init__(self, db_name):
@@ -88,3 +93,28 @@ class DfsDB:
 
         self.db_conn.commit()
         cursor.close()
+
+    def get_owned_files(self):
+        owned_files = []
+        cursor = self.db_conn.cursor()
+        cursor.execute(query_all_owned_files)
+
+        for (file_id) in cursor:
+            owned_files.append(file_id)
+
+        cursor.close()
+        return owned_files
+
+    def get_shared_files(self):
+        shared_files = []
+        cursor = self.db_conn.cursor()
+        cursor.execute(query_all_shared_files)
+
+        for (file_id, permission_write) in cursor:
+            shared_files.append({
+                'file_id': file_id,
+                'write': permission_write
+            })
+
+        cursor.close()
+        return shared_files

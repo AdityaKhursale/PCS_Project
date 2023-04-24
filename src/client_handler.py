@@ -29,3 +29,20 @@ def read_encrypted_file(file_id):
         file_details['private_key'], encrypted_data)
 
     return decrypted_data
+
+
+def get_accessible_files():
+    owned_files = utils.constants.db_instance.get_owned_files()
+    shared_files = utils.constants.db_instance.get_shared_files()
+
+    accessible_files = []
+    for file in owned_files:
+        accessible_files.append({
+            'file_id': file,
+            'permission_write': 1
+        })
+
+    if len(shared_files) != 0:
+        accessible_files.append(shared_files)
+
+    return accessible_files
