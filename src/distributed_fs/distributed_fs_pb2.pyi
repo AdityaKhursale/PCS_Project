@@ -31,6 +31,20 @@ class DeleteResponse(_message.Message):
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
 
+class FileLockRequest(_message.Message):
+    __slots__ = ["fileId"]
+    FILEID_FIELD_NUMBER: _ClassVar[int]
+    fileId: str
+    def __init__(self, fileId: _Optional[str] = ...) -> None: ...
+
+
+class FileLockResponse(_message.Message):
+    __slots__ = ["lockGranted"]
+    LOCKGRANTED_FIELD_NUMBER: _ClassVar[int]
+    lockGranted: bool
+    def __init__(self, lockGranted: bool = ...) -> None: ...
+
+
 class ListRequest(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...

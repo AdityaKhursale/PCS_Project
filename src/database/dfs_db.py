@@ -47,6 +47,12 @@ update_file_details = ("UPDATE file_details"
                        " SET public_key = %s, private_key = %s"
                        " WHERE file_id = %s")
 
+query_file_lock = ("SELECT locked FROM file_locks where file_id = %s")
+
+update_file_lock = ("UPDATE file_locks SET locked = 1 where file_id = %s")
+
+delete_file_lock = ("DELETE FROM file_locks WHERE file_id = %s")
+
 
 class DfsDB:
     def __init__(self, db_name):
@@ -165,5 +171,28 @@ class DfsDB:
         file_info = (public_key, private_key, file_id)
         cursor.execute(update_file_details, file_info)
 
+        self.db_conn.commit()
+        cursor.close()
+
+    def is_file_locked(self, file_id):
+        cursor = self.db_conn.cursor()
+        cursor.execute(query_file_lock, [file_id])
+
+        file_locked = False
+        for row in cursor:
+            file_locked = row[0]
+
+        cursor.close()
+        return file_locked
+
+    def get_file_lock(self, file_id):
+        cursor = self.db_conn.cursor()
+        cursor.execute(update_file_lock, [file_id])
+        self.db_conn.commit()
+        cursor.close()
+
+    def release_file_lock(self, file_id):
+        cursor = self.db_conn.cursor()
+        cursor.execute(delete_file_lock, [file_id])
         self.db_conn.commit()
         cursor.close()

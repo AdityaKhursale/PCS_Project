@@ -62,3 +62,16 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
 
         context.set_code(grpc.StatusCode.OK)
         return pb.PermissionResponse(status="Success!")
+
+    def GetFileLock(self, request, context):
+        file_id = request.fileId
+
+        lock_granted = False
+        if constants.db_instance.is_file_locked(file_id):
+            lock_granted = False
+        else:
+            constants.db_instance.get_file_lock(file_id)
+            lock_granted = True
+
+        context.set_code(grpc.StatusCode.OK)
+        return pb.FileLockResponse(lockGranted=lock_granted)

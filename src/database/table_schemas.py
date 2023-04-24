@@ -37,3 +37,10 @@ TABLES['node_details'] = (
     " `public_key` varchar(2048),"
     "  PRIMARY KEY (`ip_address`)"
     ") ENGINE=InnoDB")
+
+TABLES['file_locks'] = (
+    "CREATE TABLE `file_locks` ("
+    " `file_id` varchar(256) NOT NULL,"
+    " `locked` boolean NOT NULL DEFAULT 0,"
+    "  PRIMARY KEY (`file_id`)"
+    ") ENGINE=InnoDB")

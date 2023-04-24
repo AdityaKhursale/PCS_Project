@@ -49,6 +49,11 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.UpdateKeyRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.UpdateKeyResponse.FromString,
         )
+        self.GetFileLock = channel.unary_unary(
+            '/DistributedFileSystem/GetFileLock',
+            request_serializer=distributed__fs__pb2.FileLockRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.FileLockResponse.FromString,
+        )
 
 
 class DistributedFileSystemServicer(object):
@@ -96,6 +101,12 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetFileLock(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_DistributedFileSystemServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -133,6 +144,11 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             servicer.UpdateNodePublicKey,
             request_deserializer=distributed__fs__pb2.UpdateKeyRequest.FromString,
             response_serializer=distributed__fs__pb2.UpdateKeyResponse.SerializeToString,
+        ),
+        'GetFileLock': grpc.unary_unary_rpc_method_handler(
+            servicer.GetFileLock,
+            request_deserializer=distributed__fs__pb2.FileLockRequest.FromString,
+            response_serializer=distributed__fs__pb2.FileLockResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -261,5 +277,22 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/UpdateNodePublicKey',
                                              distributed__fs__pb2.UpdateKeyRequest.SerializeToString,
                                              distributed__fs__pb2.UpdateKeyResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetFileLock(request,
+                    target,
+                    options=(),
+                    channel_credentials=None,
+                    call_credentials=None,
+                    insecure=False,
+                    compression=None,
+                    wait_for_ready=None,
+                    timeout=None,
+                    metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/GetFileLock',
+                                             distributed__fs__pb2.FileLockRequest.SerializeToString,
+                                             distributed__fs__pb2.FileLockResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
