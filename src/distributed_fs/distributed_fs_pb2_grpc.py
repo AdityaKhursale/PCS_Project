@@ -46,6 +46,11 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.DeleteRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.DeleteResponse.FromString,
         )
+        self.SharePublicKey = channel.unary_unary(
+            '/DistributedFileSystem/SharePublicKey',
+            request_serializer=distributed__fs__pb2.ShareKeyRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ShareKeyResponse.FromString,
+        )
 
 
 class DistributedFileSystemServicer(object):
@@ -53,11 +58,9 @@ class DistributedFileSystemServicer(object):
 
     def ReadFile(self, request, context):
         """Missing associated documentation comment in .proto file."""
-        # context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        # context.set_details('Method not implemented!')
-        # raise NotImplementedError('Method not implemented!')
-        print("Read Request Handled!")
-        return distributed__fs__pb2.ReadResponse()
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def ListFiles(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -84,6 +87,12 @@ class DistributedFileSystemServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def DeleteFile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SharePublicKey(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -121,6 +130,11 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             servicer.DeleteFile,
             request_deserializer=distributed__fs__pb2.DeleteRequest.FromString,
             response_serializer=distributed__fs__pb2.DeleteResponse.SerializeToString,
+        ),
+        'SharePublicKey': grpc.unary_unary_rpc_method_handler(
+            servicer.SharePublicKey,
+            request_deserializer=distributed__fs__pb2.ShareKeyRequest.FromString,
+            response_serializer=distributed__fs__pb2.ShareKeyResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -232,5 +246,22 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/DeleteFile',
                                              distributed__fs__pb2.DeleteRequest.SerializeToString,
                                              distributed__fs__pb2.DeleteResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SharePublicKey(request,
+                       target,
+                       options=(),
+                       channel_credentials=None,
+                       call_credentials=None,
+                       insecure=False,
+                       compression=None,
+                       wait_for_ready=None,
+                       timeout=None,
+                       metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/SharePublicKey',
+                                             distributed__fs__pb2.ShareKeyRequest.SerializeToString,
+                                             distributed__fs__pb2.ShareKeyResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

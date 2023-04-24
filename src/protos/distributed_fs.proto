@@ -12,6 +12,8 @@ service DistributedFileSystem {
   rpc CreateFile(CreateRequest) returns (CreateResponse) {}
 
   rpc DeleteFile(DeleteRequest) returns (DeleteResponse) {}
+
+  rpc SharePublicKey(ShareKeyRequest) returns (ShareKeyResponse) {}
 }
 
 message ReadRequest {
@@ -48,4 +50,14 @@ message DeleteRequest{
 }
 
 message DeleteResponse{
+}
+
+message ShareKeyRequest {
+  string hostname = 1;
+  string address = 2;
+  string publicKey = 3;
+}
+
+message ShareKeyResponse {
+  string status = 1;
 }
