@@ -43,7 +43,10 @@ message ListResponse { repeated string files = 1; }
 
 message ReadRequest { string filename = 1; }
 
-message ReadResponse { string filecontent = 1; }
+message ReadResponse {
+  string filecontent = 1;
+  string status = 2;
+}
 
 message UpdateRequest {
     string filename = 1;

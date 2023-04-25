@@ -83,6 +83,23 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
 
         return list_response
 
+    def ReadFile(self, request, context):
+        file_id = utils.file.generate_file_id(request.filename)
+        file_details = utils.constants.db_instance.get_file_details(file_id)
+
+        if len(file_details) == 0:
+            return pb.ReadResponse(status="File doesn't exist!")
+
+        owned_files = constants.db_instance.get_owned_files()
+        if file_id not in owned_files and len(file_details['private_key']) == 0:
+            return pb.ReadResponse(status="Permission denied!")
+
+        encrypted_data = utils.file.read_file(file_details['file_path'])
+        decrypted_data = utils.encryption.decrypt_data(
+            file_details['private_key'], encrypted_data)
+
+        return pb.ReadResponse(filecontent=decrypted_data)
+
     def UpdateNodePublicKey(self, request, context):
         ip_address = request.address
         hostname = request.hostname
