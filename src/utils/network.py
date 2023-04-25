@@ -14,3 +14,12 @@ def getNodesExcept(node):
     if node in nodes:
         nodes.remove(node)
     return nodes
+
+
+def isValidIpAddress(ipAddress):
+    import socket
+    try:
+        socket.inet_aton(ipAddress)
+        return True
+    except socket.error:
+        return False

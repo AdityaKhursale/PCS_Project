@@ -1,10 +1,8 @@
-# import grpc
 import re
 import sys
 
-from utils.decorators import useDistributedFileSystemStub
 from distributed_fs import distributed_fs_pb2
-# from distributed_fs import distributed_fs_pb2_grpc
+from utils.decorators import useDistributedFileSystemStub
 
 # TODO: Use better naming
 
@@ -107,11 +105,3 @@ class Client:
             action = cls.getAction()
             if action:
                 cls.performAction(action)
-
-        # with grpc.insecure_channel('localhost:50051') as channel:
-        #     stub = distributed_fs_pb2_grpc.DistributedFileSystemStub(channel)
-        #     stub.ReadFile(distributed_fs_pb2.ReadRequest())
-
-
-if __name__ == '__main__':
-    Client.run()
