@@ -70,6 +70,19 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         context.set_code(grpc.StatusCode.OK)
         return pb.ReplicateFileResponse(status=resp_msg)
 
+    def ListFiles(self, request, context):
+        owned_files = constants.db_instance.get_owned_files()
+        shared_files = constants.db_instance.get_shared_files()
+
+        list_response = pb.ListResponse()
+        for file_id in owned_files:
+            list_response.files.append(self._get_file_name(file_id))
+
+        for file in shared_files:
+            list_response.files.append(self._get_file_name(file['file_id']))
+
+        return list_response
+
     def UpdateNodePublicKey(self, request, context):
         ip_address = request.address
         hostname = request.hostname
@@ -137,3 +150,8 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
 
         context.set_code(grpc.StatusCode.OK)
         return pb.FileLockResponse(lockGranted=lock_granted)
+
+    def _get_file_name(self, file_id):
+        file_details = constants.db_instance.get_file_details(file_id)
+        return utils.encryption.decrypt_data(file_details['private_key'],
+                                             file_details['en_file_name'])
