@@ -84,6 +84,27 @@ class ReadResponse(_message.Message):
     def __init__(self) -> None: ...
 
 
+class ReplicateFileRequest(_message.Message):
+    __slots__ = ["fileContent", "fileId", "fileName", "owner"]
+    FILECONTENT_FIELD_NUMBER: _ClassVar[int]
+    FILEID_FIELD_NUMBER: _ClassVar[int]
+    FILENAME_FIELD_NUMBER: _ClassVar[int]
+    OWNER_FIELD_NUMBER: _ClassVar[int]
+    fileContent: str
+    fileId: str
+    fileName: str
+    owner: str
+    def __init__(self, fileId: _Optional[str] = ..., fileName: _Optional[str] = ...,
+                 owner: _Optional[str] = ..., fileContent: _Optional[str] = ...) -> None: ...
+
+
+class ReplicateFileResponse(_message.Message):
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
+
+
 class UpdateKeyRequest(_message.Message):
     __slots__ = ["address", "hostname", "publicKey"]
     ADDRESS_FIELD_NUMBER: _ClassVar[int]

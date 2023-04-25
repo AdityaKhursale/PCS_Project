@@ -3,7 +3,7 @@ import os
 from database.dfs_db import DfsDB
 
 NETWORK_CFG_FILE = "network.cfg"
-CONFIG_PATH = "configs"
+CONFIG_PATH = "src/configs"
 NETWORK_CFG = os.path.join(CONFIG_PATH, NETWORK_CFG_FILE)
 
 

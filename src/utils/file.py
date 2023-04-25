@@ -30,3 +30,7 @@ def create_file_path(file_path):
 
 def delete_file(file_path):
     os.remove(file_path)
+
+
+def is_file_exist(file_path):
+    return os.path.isfile(file_path)

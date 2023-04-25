@@ -4,15 +4,71 @@ import grpc
 import utils.constants as constants
 import utils.file
 import utils.encryption
+import utils.network
+
+from distributed_fs.distributed_fs_pb2_grpc import DistributedFileSystemStub
 
 from distributed_fs.distributed_fs_pb2_grpc import DistributedFileSystemServicer
 
 
 class DistributedFileSystemService(DistributedFileSystemServicer):
     def CreateFile(self, request, context):
-        print(request.filename)
+        file_name = request.filename
+        # Use UUID for the file as we will be encrypting file name as well.
+        file_id = utils.file.generate_file_id(file_name)
+        file_path = utils.file.form_file_path(file_id)
+        owner = utils.constants.ip_addr
+
+        private_key, public_key = utils.encryption.create_rsa_key_pair()
+        en_file_name = utils.encryption.encrypt_data(public_key, file_name)
+        en_file_content = utils.encryption.encrypt_data(
+            public_key, "")
+
+        utils.constants.db_instance.save_new_file_info(
+            file_id, file_path, en_file_name, owner, public_key, private_key)
+        utils.file.store_file_to_fs(file_path, en_file_content)
+
+        nodes_in_network = utils.network.getNodesExcept(constants.ip_addr)
+        for node in nodes_in_network:
+            print(f"\nReplicating file '{file_id}' on server: {node}")
+            with grpc.insecure_channel(node) as channel:
+                stub = DistributedFileSystemStub(channel)
+                stub.ReplicateFile(pb.ReplicateFileRequest(
+                    fileId=file_id,
+                    fileName=base64.b64encode(en_file_name),
+                    owner=constants.ip_addr,
+                    fileContent=base64.b64encode(en_file_content)
+                ))
+
         context.set_code(grpc.StatusCode.OK)
         context.set_details('File Created on Server!')
+
+    def ReplicateFile(self, request, context):
+        file_id = request.fileId
+        en_file_content = base64.b64decode(request.fileContent)
+        en_file_name = base64.b64decode(request.fileName)
+        owner = request.owner
+
+        # Store file on filesystem
+        print(f"\nReceived replication request for: {file_id}")
+        file_path = utils.file.form_file_path(file_id)
+        if not utils.file.is_file_exist(file_path):
+            # This is new file, so make entry to database.
+            utils.constants.db_instance.save_replication_file_info(
+                file_id, file_path, en_file_name, owner)
+
+        # Check if the request is from the owner of file
+        resp_msg = ""
+        file_details = constants.db_instance.get_file_details(file_id)
+        if (owner == file_details['owner']):
+            print("\nRequest authentication successful, saving to filesystem!")
+            utils.file.store_file_to_fs(file_path, en_file_content)
+            resp_msg = "Success!"
+        else:
+            print("\nRequest authentication failed!")
+            resp_msg = "Failed!"
+        context.set_code(grpc.StatusCode.OK)
+        return pb.ReplicateFileResponse(status=resp_msg)
 
     def UpdateNodePublicKey(self, request, context):
         ip_address = request.address

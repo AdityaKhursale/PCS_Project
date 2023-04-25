@@ -54,6 +54,11 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.FileLockRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.FileLockResponse.FromString,
         )
+        self.ReplicateFile = channel.unary_unary(
+            '/DistributedFileSystem/ReplicateFile',
+            request_serializer=distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReplicateFileResponse.FromString,
+        )
 
 
 class DistributedFileSystemServicer(object):
@@ -107,6 +112,12 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReplicateFile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_DistributedFileSystemServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -149,6 +160,11 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             servicer.GetFileLock,
             request_deserializer=distributed__fs__pb2.FileLockRequest.FromString,
             response_serializer=distributed__fs__pb2.FileLockResponse.SerializeToString,
+        ),
+        'ReplicateFile': grpc.unary_unary_rpc_method_handler(
+            servicer.ReplicateFile,
+            request_deserializer=distributed__fs__pb2.ReplicateFileRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReplicateFileResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -294,5 +310,22 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/GetFileLock',
                                              distributed__fs__pb2.FileLockRequest.SerializeToString,
                                              distributed__fs__pb2.FileLockResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReplicateFile(request,
+                      target,
+                      options=(),
+                      channel_credentials=None,
+                      call_credentials=None,
+                      insecure=False,
+                      compression=None,
+                      wait_for_ready=None,
+                      timeout=None,
+                      metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateFile',
+                                             distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
+                                             distributed__fs__pb2.ReplicateFileResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

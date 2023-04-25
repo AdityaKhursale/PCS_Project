@@ -6,6 +6,8 @@ from database.table_schemas import TABLES
 
 add_owned_files = ("INSERT INTO owned_files (file_id) VALUES (%s)")
 
+add_replicated_files = ("INSERT INTO replicated_files (file_id) VALUES (%s)")
+
 add_file_details = ("INSERT INTO file_details"
                     " (file_id, en_file_name, owner, path, public_key,"
                     " private_key)"
@@ -87,6 +89,19 @@ class DfsDB:
         cursor = self.db_conn.cursor()
 
         cursor.execute(add_owned_files, [file_id])
+        cursor.execute(add_file_details, file_info)
+
+        self.db_conn.commit()
+        cursor.close()
+
+    def save_replication_file_info(self, file_id, file_path,
+                                   en_file_name, owner):
+        # Add entry to tables `replicated_files` and `file_details`.
+        file_info = (file_id, en_file_name, owner, file_path, "", "")
+
+        cursor = self.db_conn.cursor()
+
+        cursor.execute(add_replicated_files, [file_id])
         cursor.execute(add_file_details, file_info)
 
         self.db_conn.commit()

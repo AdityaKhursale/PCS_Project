@@ -16,6 +16,8 @@ service DistributedFileSystem {
   rpc UpdateNodePublicKey(UpdateKeyRequest) returns (UpdateKeyResponse) {}
 
   rpc GetFileLock(FileLockRequest) returns (FileLockResponse) {}
+
+  rpc ReplicateFile(ReplicateFileRequest) returns (ReplicateFileResponse) {}
 }
 
 message ReadRequest {
@@ -77,4 +79,15 @@ message FileLockRequest {
 
 message FileLockResponse {
   bool lockGranted = 1;
+}
+
+message ReplicateFileRequest {
+  string fileId = 1;
+  string fileName = 2;
+  string owner = 3;
+  string fileContent = 4;
+}
+
+message ReplicateFileResponse {
+  string status = 1;
 }
