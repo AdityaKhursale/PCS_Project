@@ -29,6 +29,7 @@ class Operations:
             exit client         exit
         """
         print(helpMenu)
+        return True
 
     # TODO: Check if server selection needs to be external and update
     @staticmethod
@@ -71,37 +72,39 @@ class Client:
             'read': Operations.readFile,
             'update': Operations.updateFile,
             'delete': Operations.deleteFile,
-            'exit': lambda **kwargs: sys.exit(0)
+            'exit': lambda **kwargs: False
         }
 
     @classmethod
     def getAction(cls):
-        userInput = input()
-        regex = r"^(?P<command>[a-z]+)\s*(?P<filename>[\w\-. ]*)" \
-                r"(?P<options>.*)"
-        match = re.search(regex, userInput)
-        if not match:
-            print("Invalid command!")
-            return Action("Invalid")
-        return Action(
-            match.group("command"), match.group("filename"),
-            match.group("options")
-        )
+        while True:
+            print(cls.COMMAND_PROMPT, end=" ")
+            userInput = input()
+            action = Action("Invalid")
+            regex = r"^(?P<command>[a-z]+)\s*(?P<filename>[\w\-. ]*)" \
+                    r"(?P<options>.*)"
+            match = re.search(regex, userInput)
+            if not match:
+                print("Invalid command!")
+            else:
+                action = Action(
+                    match.group("command"), match.group("filename"),
+                    match.group("options")
+                )
+            yield action
 
     @classmethod
     def performAction(cls, action):
         operation = cls.actionSelector.get(action.command)
         if not operation:
             print("Invalid command!")
-            return
-        operation(filename=action.filename, options=action.options)
+            return True
+        return operation(filename=action.filename, options=action.options)
 
     @classmethod
     def run(cls):
         print("\n\n\t---: Distributed File System :---")
         print("\n\t\tEnter help to get started ...\n\n")
-        while True:
-            print(cls.COMMAND_PROMPT, end=" ")
-            action = cls.getAction()
-            if action:
-                cls.performAction(action)
+        for action in cls.getAction():
+            if not cls.performAction(action):
+                break

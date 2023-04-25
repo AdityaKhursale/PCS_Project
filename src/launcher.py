@@ -1,4 +1,5 @@
 import argparse
+import multiprocessing
 
 from client import Client
 from server import Server
@@ -26,8 +27,10 @@ def prepareServer():
 
 def main():
     server = prepareServer()
-    server.run()
+    serverProcess = multiprocessing.Process(target=server.run)
+    serverProcess.start()
     Client.run()
+    serverProcess.terminate()
 
 
 if __name__ == '__main__':
