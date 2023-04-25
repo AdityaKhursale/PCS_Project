@@ -114,7 +114,10 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         file_id = request.fileId
         file_details = constants.db_instance.get_file_details(file_id)
 
-        # @TODO: Check if the request is from the file owner.
+        # context.peer() outputs as 'ipv4:127.0.0.1:47260', so strip it.
+        remote_ip_addr = context.peer()[len("ipv4") + 1:]
+        if remote_ip_addr != file_details['owner']:
+            return pb.ReplicateDeleteResponse(status="Failed!")
 
         # Delete the file and clear relevant entries from the database.
         utils.file.delete_file(file_details['file_path'])
