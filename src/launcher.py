@@ -29,7 +29,7 @@ def main():
     server = prepareServer()
     serverProcess = multiprocessing.Process(target=server.run)
     serverProcess.start()
-    Client.run()
+    Client.run(server.address)
     serverProcess.terminate()
 
 

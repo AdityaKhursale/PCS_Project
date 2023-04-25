@@ -14,7 +14,10 @@ class Action:
         self.options = options
 
 
-class Operations:
+class ActionPerformer:
+
+    serverAddress = ""
+
     @staticmethod
     def printHelp(**kwargs):
         # pylint: disable=unused-argument
@@ -25,37 +28,82 @@ class Operations:
             write to file       update <filename> < "text"
             append to file      update <filename> << "text"
             delete file         delete <filename>
-            grant permissions   <TODO: Update me>
+            list files          list
+            grant permissions   permit <filename> <hostname> <read/write>
             exit client         exit
         """
         print(helpMenu)
         return True
 
-    # TODO: Check if server selection needs to be external and update
     @staticmethod
-    @useDistributedFileSystemStub("localhost:50051")
+    @useDistributedFileSystemStub(serverAddress)
     def createFile(**kwargs):
         stub = kwargs["stub"]
         stub.CreateFile(distributed_fs_pb2.CreateRequest(
             filename=kwargs['filename']))
+        return True
 
     @staticmethod
+    @useDistributedFileSystemStub(serverAddress)
     def readFile(**kwargs):
-        pass
+        stub = kwargs["stub"]
+        resp = stub.ReadFile(distributed_fs_pb2.ReadRequest(
+            filename=kwargs['filename']))
+        print(f"\n\n{resp.filecontent}\n\n")
+        return True
 
     @staticmethod
+    @useDistributedFileSystemStub(serverAddress)
     def updateFile(**kwargs):
-        # TODO: Decide if write and append API should be separate
-        pass
+        stub = kwargs["stub"]
+        overwrite = True if re.search("<<", kwargs["options"]) else False
+        filecontent = kwargs["options"].lstrip('<').lstrip()
+        stub.UpdateFile(distributed_fs_pb2.UpdateRequest(
+            filename=kwargs['filename'],
+            filecontent=filecontent,
+            overwrite=overwrite
+        ))
+        return True
 
     @staticmethod
+    @useDistributedFileSystemStub(serverAddress)
     def deleteFile(**kwargs):
-        pass
+        stub = kwargs["stub"]
+        stub.DeleteFile(distributed_fs_pb2.DeleteRequest(
+            filename=kwargs['filename']
+        ))
+        return True
 
     @staticmethod
+    @useDistributedFileSystemStub(serverAddress)
+    def listFiles(**kwargs):
+        stub = kwargs["stub"]
+        resp = stub.ListFiles(distributed_fs_pb2.ListRequest())
+        print("\n\n")
+        for filename in resp.files:
+            print(f"{filename}")
+        print("\n\n")
+        return True
+
+    @staticmethod
+    @useDistributedFileSystemStub(serverAddress)
+    def restoreFile(**kwargs):
+        stub = kwargs["stub"]
+        stub.GrantPermissions(distributed_fs_pb2.RestoreRequest(
+            filename=kwargs["filename"]
+        ))
+        return True
+
+    @staticmethod
+    @useDistributedFileSystemStub(serverAddress)
     def grantPermissions(**kwargs):
-        # TODO: Update method once figured out exact action syntax
-        pass
+        stub = kwargs["stub"]
+        hostname, permission = kwargs["options"].split()
+        stub.GrantPermissions(distributed_fs_pb2.PermissionRequest(
+            filename=kwargs["filename"], hostname=hostname,
+            permission=permission
+        ))
+        return True
 
 
 class Client:
@@ -65,13 +113,15 @@ class Client:
     @classmethod
     @property
     def actionSelector(cls):
-        # TODO: Add grant permissions in below dict
         return {
-            'help': Operations.printHelp,
-            'create': Operations.createFile,
-            'read': Operations.readFile,
-            'update': Operations.updateFile,
-            'delete': Operations.deleteFile,
+            'help': ActionPerformer.printHelp,
+            'create': ActionPerformer.createFile,
+            'read': ActionPerformer.readFile,
+            'update': ActionPerformer.updateFile,
+            'delete': ActionPerformer.deleteFile,
+            'restore': ActionPerformer.restoreFile,
+            'list': ActionPerformer.listFiles,
+            'permit': ActionPerformer.grantPermissions,
             'exit': lambda **kwargs: False
         }
 
@@ -81,7 +131,7 @@ class Client:
             print(cls.COMMAND_PROMPT, end=" ")
             userInput = input()
             action = Action("Invalid")
-            regex = r"^(?P<command>[a-z]+)\s*(?P<filename>[\w\-. ]*)" \
+            regex = r"^(?P<command>[a-z]+)\s*(?P<filename>[\w\-.]*)" \
                     r"(?P<options>.*)"
             match = re.search(regex, userInput)
             if not match:
@@ -89,7 +139,7 @@ class Client:
             else:
                 action = Action(
                     match.group("command"), match.group("filename"),
-                    match.group("options")
+                    match.group("options").strip()
                 )
             yield action
 
@@ -102,7 +152,8 @@ class Client:
         return operation(filename=action.filename, options=action.options)
 
     @classmethod
-    def run(cls):
+    def run(cls, serverAddress):
+        ActionPerformer.serverAddress = serverAddress
         print("\n\n\t---: Distributed File System :---")
         print("\n\t\tEnter help to get started ...\n\n")
         for action in cls.getAction():
