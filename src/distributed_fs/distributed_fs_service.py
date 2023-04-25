@@ -80,7 +80,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         context.set_code(grpc.StatusCode.OK)
         return pb.UpdateKeyResponse(status="Success!")
 
-    def DeleteFile(self, request, context):
+    def ReplicateDeleteFile(self, request, context):
         file_id = request.fileId
         file_details = constants.db_instance.get_file_details(file_id)
 
@@ -91,9 +91,12 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         constants.db_instance.delete_file_entry(file_id)
 
         context.set_code(grpc.StatusCode.OK)
-        return pb.DeleteResponse(status="Success!")
+        return pb.ReplicateDeleteResponse(status="Success!")
 
-    def GrantPermisions(self, request, context):
+    def DeleteFile(self, request, context):
+        pass
+
+    def ReplicatePermissions(self, request, context):
         file_id = request.fileId
         en_public_key = base64.b64decode((request.filePublicKey))
         en_private_key = base64.b64decode((request.filePrivateKey))
@@ -117,7 +120,10 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
             file_id, file_private_key, file_public_key)
 
         context.set_code(grpc.StatusCode.OK)
-        return pb.PermissionResponse(status="Success!")
+        return pb.ReplicatePermissionResponse(status="Success!")
+
+    def GrantPermisions(self, request, context):
+        pass
 
     def GetFileLock(self, request, context):
         file_id = request.fileId

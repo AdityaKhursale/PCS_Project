@@ -14,35 +14,55 @@ class DistributedFileSystemStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.ReadFile = channel.unary_unary(
-            '/DistributedFileSystem/ReadFile',
-            request_serializer=distributed__fs__pb2.ReadRequest.SerializeToString,
-            response_deserializer=distributed__fs__pb2.ReadResponse.FromString,
+        self.CreateFile = channel.unary_unary(
+            '/DistributedFileSystem/CreateFile',
+            request_serializer=distributed__fs__pb2.CreateRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.CreateResponse.FromString,
         )
         self.ListFiles = channel.unary_unary(
             '/DistributedFileSystem/ListFiles',
             request_serializer=distributed__fs__pb2.ListRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.ListResponse.FromString,
         )
+        self.ReadFile = channel.unary_unary(
+            '/DistributedFileSystem/ReadFile',
+            request_serializer=distributed__fs__pb2.ReadRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReadResponse.FromString,
+        )
         self.UpdateFile = channel.unary_unary(
             '/DistributedFileSystem/UpdateFile',
             request_serializer=distributed__fs__pb2.UpdateRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.UpdateResponse.FromString,
+        )
+        self.DeleteFile = channel.unary_unary(
+            '/DistributedFileSystem/DeleteFile',
+            request_serializer=distributed__fs__pb2.DeleteRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.DeleteResponse.FromString,
+        )
+        self.RestoreFile = channel.unary_unary(
+            '/DistributedFileSystem/RestoreFile',
+            request_serializer=distributed__fs__pb2.RestoreRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.RestoreResponse.FromString,
         )
         self.GrantPermisions = channel.unary_unary(
             '/DistributedFileSystem/GrantPermisions',
             request_serializer=distributed__fs__pb2.PermissionRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.PermissionResponse.FromString,
         )
-        self.CreateFile = channel.unary_unary(
-            '/DistributedFileSystem/CreateFile',
-            request_serializer=distributed__fs__pb2.CreateRequest.SerializeToString,
-            response_deserializer=distributed__fs__pb2.CreateResponse.FromString,
+        self.ReplicateFile = channel.unary_unary(
+            '/DistributedFileSystem/ReplicateFile',
+            request_serializer=distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReplicateFileResponse.FromString,
         )
-        self.DeleteFile = channel.unary_unary(
-            '/DistributedFileSystem/DeleteFile',
-            request_serializer=distributed__fs__pb2.DeleteRequest.SerializeToString,
-            response_deserializer=distributed__fs__pb2.DeleteResponse.FromString,
+        self.ReplicatePermissions = channel.unary_unary(
+            '/DistributedFileSystem/ReplicatePermissions',
+            request_serializer=distributed__fs__pb2.ReplicatePermissionRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReplicatePermissionResponse.FromString,
+        )
+        self.ReplicateDeleteFile = channel.unary_unary(
+            '/DistributedFileSystem/ReplicateDeleteFile',
+            request_serializer=distributed__fs__pb2.ReplicateDeleteRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReplicateDeleteResponse.FromString,
         )
         self.UpdateNodePublicKey = channel.unary_unary(
             '/DistributedFileSystem/UpdateNodePublicKey',
@@ -54,23 +74,26 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.FileLockRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.FileLockResponse.FromString,
         )
-        self.ReplicateFile = channel.unary_unary(
-            '/DistributedFileSystem/ReplicateFile',
-            request_serializer=distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
-            response_deserializer=distributed__fs__pb2.ReplicateFileResponse.FromString,
-        )
 
 
 class DistributedFileSystemServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def ReadFile(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def CreateFile(self, request, context):
+        """Client side functions
+
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListFiles(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReadFile(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -82,19 +105,39 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteFile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RestoreFile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GrantPermisions(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def CreateFile(self, request, context):
+    def ReplicateFile(self, request, context):
+        """Replication functions
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReplicatePermissions(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DeleteFile(self, request, context):
+    def ReplicateDeleteFile(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -112,44 +155,58 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ReplicateFile(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
 
 def add_DistributedFileSystemServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'ReadFile': grpc.unary_unary_rpc_method_handler(
-            servicer.ReadFile,
-            request_deserializer=distributed__fs__pb2.ReadRequest.FromString,
-            response_serializer=distributed__fs__pb2.ReadResponse.SerializeToString,
+        'CreateFile': grpc.unary_unary_rpc_method_handler(
+            servicer.CreateFile,
+            request_deserializer=distributed__fs__pb2.CreateRequest.FromString,
+            response_serializer=distributed__fs__pb2.CreateResponse.SerializeToString,
         ),
         'ListFiles': grpc.unary_unary_rpc_method_handler(
             servicer.ListFiles,
             request_deserializer=distributed__fs__pb2.ListRequest.FromString,
             response_serializer=distributed__fs__pb2.ListResponse.SerializeToString,
         ),
+        'ReadFile': grpc.unary_unary_rpc_method_handler(
+            servicer.ReadFile,
+            request_deserializer=distributed__fs__pb2.ReadRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReadResponse.SerializeToString,
+        ),
         'UpdateFile': grpc.unary_unary_rpc_method_handler(
             servicer.UpdateFile,
             request_deserializer=distributed__fs__pb2.UpdateRequest.FromString,
             response_serializer=distributed__fs__pb2.UpdateResponse.SerializeToString,
+        ),
+        'DeleteFile': grpc.unary_unary_rpc_method_handler(
+            servicer.DeleteFile,
+            request_deserializer=distributed__fs__pb2.DeleteRequest.FromString,
+            response_serializer=distributed__fs__pb2.DeleteResponse.SerializeToString,
+        ),
+        'RestoreFile': grpc.unary_unary_rpc_method_handler(
+            servicer.RestoreFile,
+            request_deserializer=distributed__fs__pb2.RestoreRequest.FromString,
+            response_serializer=distributed__fs__pb2.RestoreResponse.SerializeToString,
         ),
         'GrantPermisions': grpc.unary_unary_rpc_method_handler(
             servicer.GrantPermisions,
             request_deserializer=distributed__fs__pb2.PermissionRequest.FromString,
             response_serializer=distributed__fs__pb2.PermissionResponse.SerializeToString,
         ),
-        'CreateFile': grpc.unary_unary_rpc_method_handler(
-            servicer.CreateFile,
-            request_deserializer=distributed__fs__pb2.CreateRequest.FromString,
-            response_serializer=distributed__fs__pb2.CreateResponse.SerializeToString,
+        'ReplicateFile': grpc.unary_unary_rpc_method_handler(
+            servicer.ReplicateFile,
+            request_deserializer=distributed__fs__pb2.ReplicateFileRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReplicateFileResponse.SerializeToString,
         ),
-        'DeleteFile': grpc.unary_unary_rpc_method_handler(
-            servicer.DeleteFile,
-            request_deserializer=distributed__fs__pb2.DeleteRequest.FromString,
-            response_serializer=distributed__fs__pb2.DeleteResponse.SerializeToString,
+        'ReplicatePermissions': grpc.unary_unary_rpc_method_handler(
+            servicer.ReplicatePermissions,
+            request_deserializer=distributed__fs__pb2.ReplicatePermissionRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReplicatePermissionResponse.SerializeToString,
+        ),
+        'ReplicateDeleteFile': grpc.unary_unary_rpc_method_handler(
+            servicer.ReplicateDeleteFile,
+            request_deserializer=distributed__fs__pb2.ReplicateDeleteRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReplicateDeleteResponse.SerializeToString,
         ),
         'UpdateNodePublicKey': grpc.unary_unary_rpc_method_handler(
             servicer.UpdateNodePublicKey,
@@ -160,11 +217,6 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             servicer.GetFileLock,
             request_deserializer=distributed__fs__pb2.FileLockRequest.FromString,
             response_serializer=distributed__fs__pb2.FileLockResponse.SerializeToString,
-        ),
-        'ReplicateFile': grpc.unary_unary_rpc_method_handler(
-            servicer.ReplicateFile,
-            request_deserializer=distributed__fs__pb2.ReplicateFileRequest.FromString,
-            response_serializer=distributed__fs__pb2.ReplicateFileResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -178,19 +230,19 @@ class DistributedFileSystem(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def ReadFile(request,
-                 target,
-                 options=(),
-                 channel_credentials=None,
-                 call_credentials=None,
-                 insecure=False,
-                 compression=None,
-                 wait_for_ready=None,
-                 timeout=None,
-                 metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReadFile',
-                                             distributed__fs__pb2.ReadRequest.SerializeToString,
-                                             distributed__fs__pb2.ReadResponse.FromString,
+    def CreateFile(request,
+                   target,
+                   options=(),
+                   channel_credentials=None,
+                   call_credentials=None,
+                   insecure=False,
+                   compression=None,
+                   wait_for_ready=None,
+                   timeout=None,
+                   metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/CreateFile',
+                                             distributed__fs__pb2.CreateRequest.SerializeToString,
+                                             distributed__fs__pb2.CreateResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -212,6 +264,23 @@ class DistributedFileSystem(object):
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def ReadFile(request,
+                 target,
+                 options=(),
+                 channel_credentials=None,
+                 call_credentials=None,
+                 insecure=False,
+                 compression=None,
+                 wait_for_ready=None,
+                 timeout=None,
+                 metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReadFile',
+                                             distributed__fs__pb2.ReadRequest.SerializeToString,
+                                             distributed__fs__pb2.ReadResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def UpdateFile(request,
                    target,
                    options=(),
@@ -225,6 +294,40 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/UpdateFile',
                                              distributed__fs__pb2.UpdateRequest.SerializeToString,
                                              distributed__fs__pb2.UpdateResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteFile(request,
+                   target,
+                   options=(),
+                   channel_credentials=None,
+                   call_credentials=None,
+                   insecure=False,
+                   compression=None,
+                   wait_for_ready=None,
+                   timeout=None,
+                   metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/DeleteFile',
+                                             distributed__fs__pb2.DeleteRequest.SerializeToString,
+                                             distributed__fs__pb2.DeleteResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RestoreFile(request,
+                    target,
+                    options=(),
+                    channel_credentials=None,
+                    call_credentials=None,
+                    insecure=False,
+                    compression=None,
+                    wait_for_ready=None,
+                    timeout=None,
+                    metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/RestoreFile',
+                                             distributed__fs__pb2.RestoreRequest.SerializeToString,
+                                             distributed__fs__pb2.RestoreResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -246,36 +349,53 @@ class DistributedFileSystem(object):
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def CreateFile(request,
-                   target,
-                   options=(),
-                   channel_credentials=None,
-                   call_credentials=None,
-                   insecure=False,
-                   compression=None,
-                   wait_for_ready=None,
-                   timeout=None,
-                   metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/CreateFile',
-                                             distributed__fs__pb2.CreateRequest.SerializeToString,
-                                             distributed__fs__pb2.CreateResponse.FromString,
+    def ReplicateFile(request,
+                      target,
+                      options=(),
+                      channel_credentials=None,
+                      call_credentials=None,
+                      insecure=False,
+                      compression=None,
+                      wait_for_ready=None,
+                      timeout=None,
+                      metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateFile',
+                                             distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
+                                             distributed__fs__pb2.ReplicateFileResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DeleteFile(request,
-                   target,
-                   options=(),
-                   channel_credentials=None,
-                   call_credentials=None,
-                   insecure=False,
-                   compression=None,
-                   wait_for_ready=None,
-                   timeout=None,
-                   metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/DeleteFile',
-                                             distributed__fs__pb2.DeleteRequest.SerializeToString,
-                                             distributed__fs__pb2.DeleteResponse.FromString,
+    def ReplicatePermissions(request,
+                             target,
+                             options=(),
+                             channel_credentials=None,
+                             call_credentials=None,
+                             insecure=False,
+                             compression=None,
+                             wait_for_ready=None,
+                             timeout=None,
+                             metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicatePermissions',
+                                             distributed__fs__pb2.ReplicatePermissionRequest.SerializeToString,
+                                             distributed__fs__pb2.ReplicatePermissionResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReplicateDeleteFile(request,
+                            target,
+                            options=(),
+                            channel_credentials=None,
+                            call_credentials=None,
+                            insecure=False,
+                            compression=None,
+                            wait_for_ready=None,
+                            timeout=None,
+                            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateDeleteFile',
+                                             distributed__fs__pb2.ReplicateDeleteRequest.SerializeToString,
+                                             distributed__fs__pb2.ReplicateDeleteResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -310,22 +430,5 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/GetFileLock',
                                              distributed__fs__pb2.FileLockRequest.SerializeToString,
                                              distributed__fs__pb2.FileLockResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def ReplicateFile(request,
-                      target,
-                      options=(),
-                      channel_credentials=None,
-                      call_credentials=None,
-                      insecure=False,
-                      compression=None,
-                      wait_for_ready=None,
-                      timeout=None,
-                      metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateFile',
-                                             distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
-                                             distributed__fs__pb2.ReplicateFileResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

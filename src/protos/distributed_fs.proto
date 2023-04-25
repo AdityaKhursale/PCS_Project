@@ -1,93 +1,103 @@
 syntax = "proto3";
 
 service DistributedFileSystem {
-  rpc ReadFile(ReadRequest) returns (ReadResponse) {}
 
-  rpc ListFiles(ListRequest) returns (ListResponse) {}
+    // Client side functions
 
-  rpc UpdateFile(UpdateRequest) returns (UpdateResponse) {}
+    rpc CreateFile(CreateRequest) returns (CreateResponse) {}
 
-  rpc GrantPermisions(PermissionRequest) returns (PermissionResponse) {}
+    rpc ListFiles(ListRequest) returns (ListResponse) {}
 
-  rpc CreateFile(CreateRequest) returns (CreateResponse) {}
+    rpc ReadFile(ReadRequest) returns (ReadResponse) {}
 
-  rpc DeleteFile(DeleteRequest) returns (DeleteResponse) {}
+    rpc UpdateFile(UpdateRequest) returns (UpdateResponse) {}
 
-  rpc UpdateNodePublicKey(UpdateKeyRequest) returns (UpdateKeyResponse) {}
+    rpc DeleteFile(DeleteRequest) returns (DeleteResponse) {}
 
-  rpc GetFileLock(FileLockRequest) returns (FileLockResponse) {}
+    rpc RestoreFile(RestoreRequest) returns (RestoreResponse) {}
 
-  rpc ReplicateFile(ReplicateFileRequest) returns (ReplicateFileResponse) {}
+    rpc GrantPermisions(PermissionRequest) returns (PermissionResponse) {}
+
+    // Replication functions
+
+    rpc ReplicateFile(ReplicateFileRequest) returns (ReplicateFileResponse) {}
+
+    rpc ReplicatePermissions(ReplicatePermissionRequest)
+        returns (ReplicatePermissionResponse) {}
+
+    rpc ReplicateDeleteFile(ReplicateDeleteRequest)
+        returns (ReplicateDeleteResponse) {}
+
+    rpc UpdateNodePublicKey(UpdateKeyRequest) returns (UpdateKeyResponse) {}
+
+    rpc GetFileLock(FileLockRequest) returns (FileLockResponse) {}
 }
 
-message ReadRequest {
+message CreateRequest { string filename = 1; }
+
+message CreateResponse {}
+
+message ListRequest {}
+
+message ListResponse { repeated string files = 1; }
+
+message ReadRequest { string filename = 1; }
+
+message ReadResponse { string filecontent = 1; }
+
+message UpdateRequest {
+    string filename = 1;
+    string filecontent = 2;
+    bool overwrite = 3;
 }
 
-message ReadResponse {
+message UpdateResponse {}
+
+message DeleteRequest { string filename = 1; }
+
+message DeleteResponse {}
+
+message RestoreRequest { string filename = 1; }
+
+message RestoreResponse {}
+
+message PermissionRequest {
+    string filename = 1;
+    string hostname = 2; // for now accept 127.0.0.1 : 50051
+    string permission = 3; // accepts either 'read' or 'write'
 }
 
-message ListRequest{
-}
-
-message ListResponse{
-}
-
-message UpdateRequest{
-}
-
-message UpdateResponse{
-}
-
-message PermissionRequest{
-  string fileId = 1;
-  string filePublicKey = 2;
-  string filePrivateKey = 3;
-}
-
-message PermissionResponse{
-  string status = 1;
-}
-
-message CreateRequest{
-  string filename = 1;
-}
-
-message CreateResponse{
-}
-
-message DeleteRequest{
-  string fileId = 1;
-}
-
-message DeleteResponse{
-  string status = 1;
-}
-
-message UpdateKeyRequest {
-  string hostname = 1;
-  string address = 2;
-  string publicKey = 3;
-}
-
-message UpdateKeyResponse {
-  string status = 1;
-}
-
-message FileLockRequest {
-  string fileId = 1;
-}
-
-message FileLockResponse {
-  bool lockGranted = 1;
-}
+message PermissionResponse {}
 
 message ReplicateFileRequest {
-  string fileId = 1;
-  string fileName = 2;
-  string owner = 3;
-  string fileContent = 4;
+    string fileId = 1;
+    string fileName = 2;
+    string owner = 3;
+    string fileContent = 4;
 }
 
-message ReplicateFileResponse {
-  string status = 1;
+message ReplicateFileResponse { string status = 1; }
+
+message ReplicatePermissionRequest {
+    string fileId = 1;
+    string filePublicKey = 2;
+    string filePrivateKey = 3;
 }
+
+message ReplicatePermissionResponse { string status = 1; }
+
+message ReplicateDeleteRequest { string fileId = 1; }
+
+message ReplicateDeleteResponse { string status = 1; }
+
+message UpdateKeyRequest {
+    string hostname = 1;
+    string address = 2;
+    string publicKey = 3;
+}
+
+message UpdateKeyResponse { string status = 1; }
+
+message FileLockRequest { string fileId = 1; }
+
+message FileLockResponse { bool lockGranted = 1; }
