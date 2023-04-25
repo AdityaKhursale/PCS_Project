@@ -26,8 +26,10 @@ class DeleteRequest(_message.Message):
 
 
 class DeleteResponse(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
 
 
 class FileLockRequest(_message.Message):

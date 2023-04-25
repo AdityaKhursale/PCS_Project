@@ -58,7 +58,7 @@ message UpdateResponse {}
 
 message DeleteRequest { string filename = 1; }
 
-message DeleteResponse {}
+message DeleteResponse { string status = 1;}
 
 message RestoreRequest { string filename = 1; }
 

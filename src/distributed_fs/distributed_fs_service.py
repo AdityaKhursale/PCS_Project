@@ -124,7 +124,33 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         return pb.ReplicateDeleteResponse(status="Success!")
 
     def DeleteFile(self, request, context):
-        pass
+        file_id = utils.file.generate_file_id(request.filename)
+        file_details = utils.constants.db_instance.get_file_details(file_id)
+
+        if len(file_details) == 0:
+            return pb.DeleteResponse(status="File doesn't exist!")
+
+        # Only file owner can issue delete request.
+        owned_files = constants.db_instance.get_owned_files()
+        if file_id not in owned_files:
+            return pb.DeleteResponse(status="Permission denied!")
+
+        # Delete the file and clear relevant entries from the database.
+        utils.file.delete_file(file_details['file_path'])
+        constants.db_instance.delete_file_entry(file_id)
+
+        # Delete the file on other nodes.
+        nodes_in_network = utils.network.getNodesExcept(constants.ip_addr)
+        for node in nodes_in_network:
+            print(f"\nDeleting file '{file_id}' on server: {node}")
+            with grpc.insecure_channel(node) as channel:
+                stub = DistributedFileSystemStub(channel)
+                stub.ReplicateDeleteFile(pb.ReplicateDeleteRequest(
+                    fileId=file_id
+                ))
+
+        context.set_code(grpc.StatusCode.OK)
+        return pb.ReplicateDeleteResponse(status="Success!")
 
     def ReplicatePermissions(self, request, context):
         file_id = request.fileId
