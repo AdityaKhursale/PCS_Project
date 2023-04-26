@@ -70,7 +70,7 @@ message PermissionRequest {
     string permission = 3; // accepts either 'read' or 'write'
 }
 
-message PermissionResponse {}
+message PermissionResponse {string status = 1;}
 
 message ReplicateFileRequest {
     string fileId = 1;

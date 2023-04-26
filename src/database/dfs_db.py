@@ -55,6 +55,12 @@ update_file_lock = ("UPDATE file_locks SET locked = 1 where file_id = %s")
 
 delete_file_lock = ("DELETE FROM file_locks WHERE file_id = %s")
 
+add_or_update_permission_entry = ("INSERT INTO granted_permissions"
+                                  " (file_id, ip_address, permission)"
+                                  " VALUES (%s, %s, %s)"
+                                  " ON DUPLICATE KEY UPDATE"
+                                  " permission=%s")
+
 
 class DfsDB:
     def __init__(self, db_name):
@@ -209,5 +215,14 @@ class DfsDB:
     def release_file_lock(self, file_id):
         cursor = self.db_conn.cursor()
         cursor.execute(delete_file_lock, [file_id])
+        self.db_conn.commit()
+        cursor.close()
+
+    def add_granted_permission_entry(self, file_id, ip_address, permission):
+        cursor = self.db_conn.cursor()
+
+        permission_info = (file_id, ip_address, permission, permission)
+        cursor.execute(add_or_update_permission_entry, permission_info)
+
         self.db_conn.commit()
         cursor.close()

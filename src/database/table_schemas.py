@@ -6,6 +6,14 @@ TABLES['owned_files'] = (
     "  PRIMARY KEY (`file_id`)"
     ") ENGINE=InnoDB")
 
+TABLES['granted_permissions'] = (
+    "CREATE TABLE `granted_permissions` ("
+    " `file_id` varchar(255) NOT NULL,"
+    " `ip_address` varchar(255) NOT NULL,"
+    " `permission` varchar(255) NOT NULL,"
+    "  PRIMARY KEY (`file_id`, `ip_address`)"
+    ") ENGINE=InnoDB")
+
 TABLES['replicated_files'] = (
     "CREATE TABLE `replicated_files` ("
     " `file_id` varchar(256) NOT NULL,"

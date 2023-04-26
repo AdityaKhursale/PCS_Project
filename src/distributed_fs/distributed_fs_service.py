@@ -182,7 +182,38 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         return pb.ReplicatePermissionResponse(status="Success!")
 
     def GrantPermisions(self, request, context):
-        pass
+        file_id = utils.file.generate_file_id(request.filename)
+        ip_addr = request.hostname
+        permission = request.permission
+
+        file_details = utils.constants.db_instance.get_file_details(file_id)
+
+        if len(file_details) == 0:
+            return pb.PermissionResponse(status="File doesn't exist!")
+
+        # Only file owner can grant permissions.
+        owned_files = constants.db_instance.get_owned_files()
+        if file_id not in owned_files:
+            return pb.PermissionResponse(status="Permission denied!")
+
+        repl_permission = pb.ReplicatePermissionRequest()
+        repl_permission.fileId = file_id
+        repl_permission.filePrivateKey = base64.b64encode(
+            file_details['private_key'])
+
+        if permission == "write":
+            repl_permission.filePublicKey = base64.b64encode(
+                file_details['public_key'])
+
+        with grpc.insecure_channel(ip_addr) as channel:
+            stub = DistributedFileSystemStub(channel)
+            stub.ReplicatePermissions(repl_permission)
+
+        constants.db_instance.add_granted_permission_entry(
+            file_id, ip_addr, permission)
+
+        context.set_code(grpc.StatusCode.OK)
+        return pb.PermissionResponse(status="Success!")
 
     def GetFileLock(self, request, context):
         file_id = request.fileId
