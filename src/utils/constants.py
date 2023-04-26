@@ -2,18 +2,30 @@ import os
 
 from database.dfs_db import DfsDB
 
+# Configs
+
+CONFIG_PATH = os.path.join("src", "configs")
 NETWORK_CFG_FILE = "network.cfg"
-CONFIG_PATH = "src/configs"
+LOGGING_CFG_FILE = "logging_config.yml"
 NETWORK_CFG = os.path.join(CONFIG_PATH, NETWORK_CFG_FILE)
+LOGGING_CFG = os.path.join(CONFIG_PATH, LOGGING_CFG_FILE)
+
+# Logs
+
+LOG_DIR = os.path.join("logs")
+
+# Assets
+
+ASSETS = "assets"
 
 
-def init_env(ip_address, host):
+def setupGlobalConstants(address, host):
     global dir_path
     global host_name
     global db_instance
     global ip_addr
 
     host_name = host
-    ip_addr = ip_address
-    dir_path = "assets/" + host_name + "/"
+    ip_addr = address
+    dir_path = os.path.join(ASSETS, host_name)
     db_instance = DfsDB(host_name)

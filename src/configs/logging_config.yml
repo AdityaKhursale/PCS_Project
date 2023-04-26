@@ -1,0 +1,41 @@
+version: 1
+formatters:
+  brief:
+    format: "%(message)s"
+  with_timestamp:
+    format: "[%(asctime)s] [%(module)-10s] %(levelname)-8s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+handlers:
+  dfs_log_file:
+    class: logging.handlers.RotatingFileHandler
+    formatter: with_timestamp
+    filename: logs/distributd_fs_service_debug.log
+    maxBytes: 1073741824 # 1G
+    backupCount: 3
+  server_log_file:
+    class: logging.handlers.RotatingFileHandler
+    formatter: with_timestamp
+    filename: logs/server_debug.log
+    maxBytes: 1073741824 # 1G
+    backupCount: 3
+  db_log_file:
+    class: logging.handlers.RotatingFileHandler
+    formatter: with_timestamp
+    filename: logs/db_debug.log
+    maxBytes: 1073741824 # 1G
+    backupCount: 3
+loggers:
+  distributed_fs:
+    level: DEBUG
+    handlers: [dfs_log_file]
+    propagate: no
+  server:
+    level: DEBUG
+    handlers: [server_log_file]
+    propogate: no
+  database:
+    level: DEBUG
+    handlers: [db_log_file]
+    propogate: no
+# root:
+#   handlers: [dfs_log_file]

@@ -1,9 +1,8 @@
 import re
-import sys
 
 from distributed_fs import distributed_fs_pb2
 from utils.decorators import useDistributedFileSystemStub
-
+from utils import constants
 # TODO: Use better naming
 
 
@@ -15,8 +14,6 @@ class Action:
 
 
 class ActionPerformer:
-
-    serverAddress = ""
 
     @staticmethod
     def printHelp(**kwargs):
@@ -36,7 +33,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def createFile(**kwargs):
         stub = kwargs["stub"]
         stub.CreateFile(distributed_fs_pb2.CreateRequest(
@@ -44,7 +41,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def readFile(**kwargs):
         stub = kwargs["stub"]
         resp = stub.ReadFile(distributed_fs_pb2.ReadRequest(
@@ -53,7 +50,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def updateFile(**kwargs):
         stub = kwargs["stub"]
         overwrite = True if re.search("<<", kwargs["options"]) else False
@@ -66,7 +63,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def deleteFile(**kwargs):
         stub = kwargs["stub"]
         stub.DeleteFile(distributed_fs_pb2.DeleteRequest(
@@ -75,7 +72,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def listFiles(**kwargs):
         stub = kwargs["stub"]
         resp = stub.ListFiles(distributed_fs_pb2.ListRequest())
@@ -86,7 +83,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def restoreFile(**kwargs):
         stub = kwargs["stub"]
         stub.GrantPermissions(distributed_fs_pb2.RestoreRequest(
@@ -95,7 +92,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(serverAddress)
+    @useDistributedFileSystemStub(constants.ip_addr)
     def grantPermissions(**kwargs):
         stub = kwargs["stub"]
         hostname, permission = kwargs["options"].split()
@@ -152,8 +149,7 @@ class Client:
         return operation(filename=action.filename, options=action.options)
 
     @classmethod
-    def run(cls, serverAddress):
-        ActionPerformer.serverAddress = serverAddress
+    def run(cls):
         print("\n\n\t---: Distributed File System :---")
         print("\n\t\tEnter help to get started ...\n\n")
         for action in cls.getAction():

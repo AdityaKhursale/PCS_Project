@@ -1,5 +1,6 @@
 import os
-import utils.constants as constants
+import re
+from utils import constants
 import uuid
 
 
@@ -34,3 +35,22 @@ def delete_file(file_path):
 
 def is_file_exist(file_path):
     return os.path.isfile(file_path)
+
+
+def createDir(dirname):
+    try:
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+    except IOError:
+        pass
+    return os.path.exists(dirname)
+
+
+def removeFiles(dirname, pattern, raiseException=False):
+    try:
+        for f in os.listdir(dirname):
+            if re.search(pattern, f):
+                os.remove(os.path.join(dirname, f))
+    except FileNotFoundError as e:
+        if raiseException:
+            raise (e)

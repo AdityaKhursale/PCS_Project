@@ -9,15 +9,21 @@ import utils.network
 from distributed_fs.distributed_fs_pb2_grpc import DistributedFileSystemStub
 
 from distributed_fs.distributed_fs_pb2_grpc import DistributedFileSystemServicer
+from utils.misc import getLogger
 
 
 class DistributedFileSystemService(DistributedFileSystemServicer):
+    def __init__(self):
+        super().__init__()
+        self.logger = getLogger("distributed_fs")
+
     def CreateFile(self, request, context):
+        self.logger.info("Reached here!")
         file_name = request.filename
         # Use UUID for the file as we will be encrypting file name as well.
         file_id = utils.file.generate_file_id(file_name)
         file_path = utils.file.form_file_path(file_id)
-        owner = utils.constants.ip_addr
+        owner = constants.ip_addr
 
         private_key, public_key = utils.encryption.create_rsa_key_pair()
         en_file_name = utils.encryption.encrypt_data(public_key, file_name)

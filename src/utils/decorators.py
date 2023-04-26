@@ -9,7 +9,9 @@ def useDistributedFileSystemStub(server):
     def _decorator(func):
         @functools.wraps(func)
         def wrapper(**kwargs):
-            with grpc.insecure_channel(server) as channel:
+            with grpc.insecure_channel(
+                server, options=(('grpc.enable_http_proxy', 0),)
+            ) as channel:
                 stub = DistributedFileSystemStub(channel)
                 kwargs['stub'] = stub
                 func(**kwargs)

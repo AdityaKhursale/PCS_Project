@@ -1,13 +1,11 @@
+from utils.network import isValidIpAddress
+from utils import constants
+
 import argparse
 import multiprocessing
 
-from client import Client
-from server import Server
-from utils.network import isValidIpAddress
 
-
-def prepareServer():
-
+def parseArgs():
     def checkIp(ip):
         if not isValidIpAddress(ip):
             raise argparse.ArgumentTypeError(f"{ip} is not a valid ip address")
@@ -18,18 +16,31 @@ def prepareServer():
     parser.add_argument("--ip", help="ip address",
                         type=checkIp, required=True)
     parser.add_argument("--port", help="port number", type=str, required=True)
-    parser.add_argument("--hostname", help="Host name", default="myhost")
-    args = parser.parse_args()
+    parser.add_argument("--hostname", help="Host name",
+                        type=str, required=True)
+    return parser.parse_args()
 
-    server = Server(args.ip, args.port)
     return server
 
 
 def main():
-    server = prepareServer()
-    serverProcess = multiprocessing.Process(target=server.run)
+    args = parseArgs()
+    # TODO: Handle these global constants better
+    constants.setupGlobalConstants(
+        ":".join((args.ip, args.port)), args.hostname
+    )
+
+    # Lauch server
+    from server import Server  # Do not changet this import
+    serverObj = Server(args.ip, args.port, args.hostname)
+    serverProcess = multiprocessing.Process(target=serverObj.run)
     serverProcess.start()
-    Client.run(server.address)
+
+    # Lauch Client
+    from client import Client  # Do not changet this import
+    Client.run()
+
+    # Stop Server
     serverProcess.terminate()
 
 
