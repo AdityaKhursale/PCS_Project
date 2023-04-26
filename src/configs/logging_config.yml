@@ -7,21 +7,21 @@ formatters:
     datefmt: "%Y-%m-%d %H:%M:%S"
 handlers:
   dfs_log_file:
-    class: logging.handlers.RotatingFileHandler
+    class: utils.misc.DirectoryEnsuredFileHandler
     formatter: with_timestamp
-    filename: logs/distributd_fs_service_debug.log
+    filename: logs/$HOSTNAME/distributd_fs_service_debug.log
     maxBytes: 1073741824 # 1G
     backupCount: 3
   server_log_file:
-    class: logging.handlers.RotatingFileHandler
+    class: utils.misc.DirectoryEnsuredFileHandler
     formatter: with_timestamp
-    filename: logs/server_debug.log
+    filename: logs/$HOSTNAME/server_debug.log
     maxBytes: 1073741824 # 1G
     backupCount: 3
   db_log_file:
-    class: logging.handlers.RotatingFileHandler
+    class: utils.misc.DirectoryEnsuredFileHandler
     formatter: with_timestamp
-    filename: logs/db_debug.log
+    filename: logs/$HOSTNAME/db_debug.log
     maxBytes: 1073741824 # 1G
     backupCount: 3
 loggers:

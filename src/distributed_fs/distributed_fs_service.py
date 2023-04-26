@@ -15,7 +15,8 @@ from utils.misc import getLogger
 class DistributedFileSystemService(DistributedFileSystemServicer):
     def __init__(self):
         super().__init__()
-        self.logger = getLogger("distributed_fs")
+        self.logger = getLogger(
+            "distributed_fs", {"$HOSTNAME": constants.host_name})
 
     def CreateFile(self, request, context):
         self.logger.info("Reached here!")
@@ -30,13 +31,13 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         en_file_content = utils.encryption.encrypt_data(
             public_key, "")
 
-        utils.constants.db_instance.save_new_file_info(
+        constants.db_instance.save_new_file_info(
             file_id, file_path, en_file_name, owner, public_key, private_key)
         utils.file.store_file_to_fs(file_path, en_file_content)
 
         nodes_in_network = utils.network.getNodesExcept(constants.ip_addr)
         for node in nodes_in_network:
-            print(f"\nReplicating file '{file_id}' on server: {node}")
+            self.logger.info(f"Replicating file '{file_id}' on server: {node}")
             with grpc.insecure_channel(node) as channel:
                 stub = DistributedFileSystemStub(channel)
                 stub.ReplicateFile(pb.ReplicateFileRequest(
@@ -56,22 +57,23 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         owner = request.owner
 
         # Store file on filesystem
-        print(f"\nReceived replication request for: {file_id}")
+        self.logger.info(f"Received replication request for: {file_id}")
         file_path = utils.file.form_file_path(file_id)
         if not utils.file.is_file_exist(file_path):
             # This is new file, so make entry to database.
-            utils.constants.db_instance.save_replication_file_info(
+            constants.db_instance.save_replication_file_info(
                 file_id, file_path, en_file_name, owner)
 
         # Check if the request is from the owner of file
         resp_msg = ""
         file_details = constants.db_instance.get_file_details(file_id)
         if (owner == file_details['owner']):
-            print("\nRequest authentication successful, saving to filesystem!")
+            self.logger.info("Request authentication successful,"
+                             " saving to filesystem!")
             utils.file.store_file_to_fs(file_path, en_file_content)
             resp_msg = "Success!"
         else:
-            print("\nRequest authentication failed!")
+            self.logger.error("Request authentication failed!")
             resp_msg = "Failed!"
         context.set_code(grpc.StatusCode.OK)
         return pb.ReplicateFileResponse(status=resp_msg)
@@ -91,7 +93,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
 
     def ReadFile(self, request, context):
         file_id = utils.file.generate_file_id(request.filename)
-        file_details = utils.constants.db_instance.get_file_details(file_id)
+        file_details = constants.db_instance.get_file_details(file_id)
 
         if len(file_details) == 0:
             return pb.ReadResponse(status="File doesn't exist!")

@@ -13,7 +13,7 @@ class Server:
         self.ip = ip
         self.port = port
         self.host = host
-        self.logger = getLogger("server")
+        self.logger = getLogger("server", {"$HOSTNAME": host})
 
     @property
     def address(self):

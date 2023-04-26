@@ -4,6 +4,7 @@ import mysql.connector
 from mysql.connector import errorcode
 from database.table_schemas import TABLES
 from utils.misc import getLogger
+from utils import constants
 
 add_owned_files = ("INSERT INTO owned_files (file_id) VALUES (%s)")
 
@@ -67,7 +68,8 @@ class DfsDB:
     def __init__(self, db_name):
         self.db_name = db_name
         self.db_conn = db.db_conn(db_name)
-        self.logger = getLogger("database")
+        self.logger = getLogger(
+            "database", {"$HOSTNAME": constants.host_name})
         self.create_dfs_tables()
 
     def create_dfs_tables(self):

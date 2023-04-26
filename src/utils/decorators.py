@@ -14,6 +14,6 @@ def useDistributedFileSystemStub(server):
             ) as channel:
                 stub = DistributedFileSystemStub(channel)
                 kwargs['stub'] = stub
-                func(**kwargs)
+                return func(**kwargs)
         return wrapper
     return _decorator
