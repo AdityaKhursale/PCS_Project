@@ -39,7 +39,7 @@ delete_from_replicated_file_permissions = ("DELETE FROM"
                                            " replicated_file_permissions"
                                            " WHERE file_id = %s")
 
-delete_from_file_details = ("DELETE FROM file_details WHERE file_details = %s")
+delete_from_file_details = ("DELETE FROM file_details WHERE file_id = %s")
 
 add_or_update_permission_entry = ("INSERT INTO replicated_file_permissions"
                                   " (file_id, permission_write)"
