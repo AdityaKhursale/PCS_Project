@@ -27,6 +27,7 @@ class ActionPerformer:
             delete file         delete <filename>
             list files          list
             grant permissions   permit <filename> <hostname> <read/write>
+            create node keys    keys
             exit client         exit
         """
         print(helpMenu)
@@ -102,6 +103,13 @@ class ActionPerformer:
         ))
         return True
 
+    @staticmethod
+    @useDistributedFileSystemStub(constants.ip_addr)
+    def createNodeKeys(**kwargs):
+        stub = kwargs["stub"]
+        stub.CreateNodeKeys(distributed_fs_pb2.CreateNodeKeyRequest())
+        return True
+
 
 class Client:
 
@@ -119,6 +127,7 @@ class Client:
             'restore': ActionPerformer.restoreFile,
             'list': ActionPerformer.listFiles,
             'permit': ActionPerformer.grantPermissions,
+            'keys': ActionPerformer.createNodeKeys,
             'exit': lambda **kwargs: False
         }
 

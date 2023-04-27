@@ -6,6 +6,18 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Op
 DESCRIPTOR: _descriptor.FileDescriptor
 
 
+class CreateNodeKeyRequest(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...
+
+
+class CreateNodeKeyResponse(_message.Message):
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
+
+
 class CreateRequest(_message.Message):
     __slots__ = ["filename"]
     FILENAME_FIELD_NUMBER: _ClassVar[int]

@@ -44,10 +44,15 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.RestoreRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.RestoreResponse.FromString,
         )
-        self.GrantPermisions = channel.unary_unary(
-            '/DistributedFileSystem/GrantPermisions',
+        self.GrantPermissions = channel.unary_unary(
+            '/DistributedFileSystem/GrantPermissions',
             request_serializer=distributed__fs__pb2.PermissionRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.PermissionResponse.FromString,
+        )
+        self.CreateNodeKeys = channel.unary_unary(
+            '/DistributedFileSystem/CreateNodeKeys',
+            request_serializer=distributed__fs__pb2.CreateNodeKeyRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.CreateNodeKeyResponse.FromString,
         )
         self.ReplicateFile = channel.unary_unary(
             '/DistributedFileSystem/ReplicateFile',
@@ -122,7 +127,13 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GrantPermisions(self, request, context):
+    def GrantPermissions(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateNodeKeys(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -199,10 +210,15 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             request_deserializer=distributed__fs__pb2.RestoreRequest.FromString,
             response_serializer=distributed__fs__pb2.RestoreResponse.SerializeToString,
         ),
-        'GrantPermisions': grpc.unary_unary_rpc_method_handler(
-            servicer.GrantPermisions,
+        'GrantPermissions': grpc.unary_unary_rpc_method_handler(
+            servicer.GrantPermissions,
             request_deserializer=distributed__fs__pb2.PermissionRequest.FromString,
             response_serializer=distributed__fs__pb2.PermissionResponse.SerializeToString,
+        ),
+        'CreateNodeKeys': grpc.unary_unary_rpc_method_handler(
+            servicer.CreateNodeKeys,
+            request_deserializer=distributed__fs__pb2.CreateNodeKeyRequest.FromString,
+            response_serializer=distributed__fs__pb2.CreateNodeKeyResponse.SerializeToString,
         ),
         'ReplicateFile': grpc.unary_unary_rpc_method_handler(
             servicer.ReplicateFile,
@@ -348,19 +364,36 @@ class DistributedFileSystem(object):
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def GrantPermisions(request,
-                        target,
-                        options=(),
-                        channel_credentials=None,
-                        call_credentials=None,
-                        insecure=False,
-                        compression=None,
-                        wait_for_ready=None,
-                        timeout=None,
-                        metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/GrantPermisions',
+    def GrantPermissions(request,
+                         target,
+                         options=(),
+                         channel_credentials=None,
+                         call_credentials=None,
+                         insecure=False,
+                         compression=None,
+                         wait_for_ready=None,
+                         timeout=None,
+                         metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/GrantPermissions',
                                              distributed__fs__pb2.PermissionRequest.SerializeToString,
                                              distributed__fs__pb2.PermissionResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateNodeKeys(request,
+                       target,
+                       options=(),
+                       channel_credentials=None,
+                       call_credentials=None,
+                       insecure=False,
+                       compression=None,
+                       wait_for_ready=None,
+                       timeout=None,
+                       metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/CreateNodeKeys',
+                                             distributed__fs__pb2.CreateNodeKeyRequest.SerializeToString,
+                                             distributed__fs__pb2.CreateNodeKeyResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

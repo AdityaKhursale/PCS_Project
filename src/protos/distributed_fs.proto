@@ -16,7 +16,9 @@ service DistributedFileSystem {
 
     rpc RestoreFile(RestoreRequest) returns (RestoreResponse) {}
 
-    rpc GrantPermisions(PermissionRequest) returns (PermissionResponse) {}
+    rpc GrantPermissions(PermissionRequest) returns (PermissionResponse) {}
+    
+    rpc CreateNodeKeys(CreateNodeKeyRequest) returns (CreateNodeKeyResponse) {}
 
     // Replication functions
 
@@ -73,6 +75,10 @@ message PermissionRequest {
 }
 
 message PermissionResponse { string status = 1; }
+
+message CreateNodeKeyRequest {}
+
+message CreateNodeKeyResponse { string status = 1; }
 
 message ReplicateFileRequest {
     string fileId = 1;

@@ -25,6 +25,9 @@ add_or_update_node_details = ("INSERT INTO node_details"
                               " ON DUPLICATE KEY UPDATE"
                               " hostname=%s, public_key=%s")
 
+query_node_public_key = (
+    "SELECT public_key FROM node_details WHERE ip_address = %s")
+
 query_all_owned_files = ("SELECT file_id FROM owned_files")
 
 query_all_shared_files = ("SELECT file_id, permission_write"
@@ -146,6 +149,17 @@ class DfsDB:
 
         self.db_conn.commit()
         cursor.close()
+
+    def get_node_public_key(self, address):
+        public_key = b""
+        cursor = self.db_conn.cursor()
+        cursor.execute(query_node_public_key, [address])
+
+        for row in cursor:
+            public_key = row[0]
+
+        cursor.close()
+        return public_key
 
     def get_owned_files(self):
         owned_files = []

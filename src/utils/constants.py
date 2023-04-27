@@ -24,8 +24,12 @@ def setupGlobalConstants(address, host):
     global host_name
     global db_instance
     global ip_addr
+    global private_key_path
+    global public_key_path
 
     host_name = host
     ip_addr = address
     dir_path = os.path.join(ASSETS, host_name)
+    private_key_path = os.path.join(dir_path, "private_key")
+    public_key_path = os.path.join(dir_path, "public_key")
     db_instance = DfsDB(host_name)

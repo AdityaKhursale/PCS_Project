@@ -34,8 +34,8 @@ def decrypt_data(private_key, encrypted_data):
 
 
 def create_node_rsa_key_pair():
-    private_key_path = constants.dir_path + "private_key"
-    public_key_path = constants.dir_path + "public_key"
+    private_key_path = constants.private_key_path
+    public_key_path = constants.public_key_path
 
     private_key, public_key = create_rsa_key_pair()
 
@@ -46,5 +46,4 @@ def create_node_rsa_key_pair():
 
 
 def get_node_private_key():
-    private_key_path = constants.dir_path + "private_key"
-    return utils.file.read_file(private_key_path)
+    return utils.file.read_file(constants.private_key_path)
