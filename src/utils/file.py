@@ -22,7 +22,9 @@ def store_file_to_fs(file_path, file_content):
 
 def read_file(file_path):
     fd = open(file_path, "rb")
-    return fd.read()
+    data = fd.read()
+    fd.close()
+    return data
 
 
 def create_file_path(file_path):

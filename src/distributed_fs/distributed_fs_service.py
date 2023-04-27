@@ -174,8 +174,8 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
 
     def ReplicatePermissions(self, request, context):
         file_id = request.fileId
-        en_public_key = request.filePublicKey
-        en_private_key = request.filePrivateKey
+        en_public_key = base64.b64decode(request.filePublicKey)
+        en_private_key = base64.b64decode(request.filePrivateKey)
         file_public_key = b""
         file_private_key = b""
 
@@ -189,10 +189,10 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
                 nodes_private_key, en_private_key)
 
         # Note the granted permission and file keys.
-        is_write_permission = 1 if len(file_private_key) != 0 else 0
+        is_write_permission = 1 if len(file_public_key) != 0 else 0
         constants.db_instance.add_permission_entry(
             file_id, is_write_permission)
-        constants.update_file_details(
+        constants.db_instance.update_file_details(
             file_id, file_private_key, file_public_key)
 
         context.set_code(grpc.StatusCode.OK)
@@ -212,32 +212,23 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         if file_id not in owned_files:
             return pb.PermissionResponse(status="Permission denied!")
 
-        '''repl_permission = pb.ReplicatePermissionRequest()
-        repl_permission.fileId = file_id
-        repl_permission.filePrivateKey = base64.b64encode(
-            file_details['private_key'])
-        if permission == "write":
-            repl_permission.filePublicKey = base64.b64encode(
-                file_details['public_key'])
-
-        with grpc.insecure_channel(ip_addr) as channel:
-            stub = DistributedFileSystemStub(channel)
-            stub.ReplicatePermissions(repl_permission)'''
-
+        # Encode private key for read access.
         shared_nodes_public_key = constants.db_instance.get_node_public_key(
             ip_addr)
-        file_private_key = utils.encryption.encrypt_data(
+        file_private_key = utils.encryption.encrypt_key(
             shared_nodes_public_key, file_details['private_key'])
-        file_public_key = ""
+
+        # Encode public key if write acccess is granted.
+        file_public_key = b""
         if permission == "write":
-            file_public_key = utils.encryption.encrypt_data(
+            file_public_key = utils.encryption.encrypt_binary_data(
                 shared_nodes_public_key, file_details['public_key'])
         with grpc.insecure_channel(ip_addr) as channel:
             stub = DistributedFileSystemStub(channel)
             stub.ReplicatePermissions(pb.ReplicatePermissionRequest(
                 fileId=file_id,
-                filePrivateKey=file_private_key,
-                filePublicKey=file_public_key
+                filePrivateKey=base64.b64encode(file_private_key),
+                filePublicKey=base64.b64encode(file_public_key)
             ))
 
         constants.db_instance.add_granted_permission_entry(

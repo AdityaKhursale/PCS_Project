@@ -42,7 +42,7 @@ TABLES['node_details'] = (
     "CREATE TABLE `node_details` ("
     " `ip_address` varchar(256) NOT NULL,"
     " `hostname` varchar(256) NOT NULL,"
-    " `public_key` varchar(2048),"
+    " `public_key` varchar(8192),"
     "  PRIMARY KEY (`ip_address`)"
     ") ENGINE=InnoDB")
 

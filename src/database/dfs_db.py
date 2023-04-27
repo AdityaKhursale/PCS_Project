@@ -44,15 +44,16 @@ delete_from_replicated_file_permissions = ("DELETE FROM"
 
 delete_from_file_details = ("DELETE FROM file_details WHERE file_id = %s")
 
-add_or_update_permission_entry = ("INSERT INTO replicated_file_permissions"
-                                  " (file_id, permission_write)"
-                                  " VALUES (%s, %d)"
-                                  " ON DUPLICATE KEY UPDATE"
-                                  " permission_write=%d")
+add_or_update_permission_entry_repl = ("INSERT INTO"
+                                       " replicated_file_permissions"
+                                       " (file_id, permission_write)"
+                                       " VALUES (%s, %s)"
+                                       " ON DUPLICATE KEY UPDATE"
+                                       " permission_write=%s")
 
-update_file_details = ("UPDATE file_details"
-                       " SET public_key = %s, private_key = %s"
-                       " WHERE file_id = %s")
+update_file_info = ("UPDATE file_details"
+                    " SET public_key = %s, private_key = %s"
+                    " WHERE file_id = %s")
 
 query_file_lock = (
     "SELECT locked, ip_address FROM file_locks where file_id = %s")
@@ -201,8 +202,7 @@ class DfsDB:
         cursor = self.db_conn.cursor()
 
         permission_info = (file_id, is_write_permission, is_write_permission)
-        cursor.execute(add_or_update_permission_entry, permission_info)
-
+        cursor.execute(add_or_update_permission_entry_repl, permission_info)
         self.db_conn.commit()
         cursor.close()
 
@@ -210,7 +210,7 @@ class DfsDB:
         cursor = self.db_conn.cursor()
 
         file_info = (public_key, private_key, file_id)
-        cursor.execute(update_file_details, file_info)
+        cursor.execute(update_file_info, file_info)
 
         self.db_conn.commit()
         cursor.close()
