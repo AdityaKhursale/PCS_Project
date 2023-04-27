@@ -84,7 +84,7 @@ message ReplicateFileRequest {
 message ReplicateFileResponse { string status = 1; }
 
 message ReplicateUpdateRequest {
-    string file_id = 1;
+    string fileId = 1;
     string fileContent = 2;
 }
 

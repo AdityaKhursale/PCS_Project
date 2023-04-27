@@ -9,7 +9,7 @@ def generate_file_id(file_name):
 
 
 def form_file_path(file_id):
-    return constants.dir_path + file_id
+    return os.path.join(constants.dir_path, file_id)
 
 
 def store_file_to_fs(file_path, file_content):

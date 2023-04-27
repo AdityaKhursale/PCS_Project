@@ -53,7 +53,7 @@ class ActionPerformer:
     @useDistributedFileSystemStub(constants.ip_addr)
     def updateFile(**kwargs):
         stub = kwargs["stub"]
-        overwrite = True if re.search("<<", kwargs["options"]) else False
+        overwrite = False if re.search("<<", kwargs["options"]) else True
         filecontent = kwargs["options"].lstrip('<').lstrip()
         stub.UpdateFile(distributed_fs_pb2.UpdateRequest(
             filename=kwargs['filename'],

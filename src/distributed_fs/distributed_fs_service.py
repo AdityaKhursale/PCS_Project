@@ -282,7 +282,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
                 file_details['public_key'], new_file_content)
 
         # Store file to filesystem.
-        # utils.file.store_file_to_fs(file_details['path'], en_file_content)
+        utils.file.store_file_to_fs(file_details['file_path'], en_file_content)
 
         # Replicate the update.
         nodes_in_network = utils.network.getNodesExcept(constants.ip_addr)
@@ -299,7 +299,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         return pb.UpdateResponse(status="Success!")
 
     def ReplicateUpdateFile(self, request, context):
-        file_id = request.file_id
+        file_id = request.fileId
         en_file_content = base64.b64decode(request.fileContent)
 
         file_lock_owner_ip = constants.db_instance.get_file_lock_owner_ip(

@@ -149,12 +149,12 @@ class ReplicatePermissionResponse(_message.Message):
 
 
 class ReplicateUpdateRequest(_message.Message):
-    __slots__ = ["fileContent", "file_id"]
+    __slots__ = ["fileContent", "fileId"]
     FILECONTENT_FIELD_NUMBER: _ClassVar[int]
-    FILE_ID_FIELD_NUMBER: _ClassVar[int]
+    FILEID_FIELD_NUMBER: _ClassVar[int]
     fileContent: str
-    file_id: str
-    def __init__(self, file_id: _Optional[str] = ...,
+    fileId: str
+    def __init__(self, fileId: _Optional[str] = ...,
                  fileContent: _Optional[str] = ...) -> None: ...
 
 
