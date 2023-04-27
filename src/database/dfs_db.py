@@ -51,9 +51,11 @@ update_file_details = ("UPDATE file_details"
                        " SET public_key = %s, private_key = %s"
                        " WHERE file_id = %s")
 
-query_file_lock = ("SELECT locked FROM file_locks where file_id = %s")
+query_file_lock = (
+    "SELECT locked, ip_address FROM file_locks where file_id = %s")
 
-update_file_lock = ("UPDATE file_locks SET locked = 1 where file_id = %s")
+update_file_lock = (
+    "UPDATE file_locks SET locked = 1, ip_address = %s where file_id = %s")
 
 delete_file_lock = ("DELETE FROM file_locks WHERE file_id = %s")
 
@@ -210,9 +212,21 @@ class DfsDB:
         cursor.close()
         return file_locked
 
-    def get_file_lock(self, file_id):
+    def get_file_lock_owner_ip(self, file_id):
         cursor = self.db_conn.cursor()
-        cursor.execute(update_file_lock, [file_id])
+        cursor.execute(query_file_lock, [file_id])
+
+        ip_address = ""
+        for row in cursor:
+            ip_address = row[1]
+
+        cursor.close()
+        return ip_address
+
+    def get_file_lock(self, ip_address, file_id):
+        cursor = self.db_conn.cursor()
+        lock_info = [ip_address, file_id]
+        cursor.execute(update_file_lock, lock_info)
         self.db_conn.commit()
         cursor.close()
 

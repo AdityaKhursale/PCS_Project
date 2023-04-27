@@ -50,5 +50,6 @@ TABLES['file_locks'] = (
     "CREATE TABLE `file_locks` ("
     " `file_id` varchar(256) NOT NULL,"
     " `locked` boolean NOT NULL DEFAULT 0,"
+    " `ip_address` varchar(256) NOT NULL,"
     "  PRIMARY KEY (`file_id`)"
     ") ENGINE=InnoDB")

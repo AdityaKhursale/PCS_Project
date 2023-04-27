@@ -22,6 +22,8 @@ service DistributedFileSystem {
 
     rpc ReplicateFile(ReplicateFileRequest) returns (ReplicateFileResponse) {}
 
+    rpc ReplicateUpdateFile(ReplicateUpdateRequest) returns (ReplicateUpdateResponse) {}
+
     rpc ReplicatePermissions(ReplicatePermissionRequest)
         returns (ReplicatePermissionResponse) {}
 
@@ -54,7 +56,7 @@ message UpdateRequest {
     bool overwrite = 3;
 }
 
-message UpdateResponse {}
+message UpdateResponse {string status = 1;}
 
 message DeleteRequest { string filename = 1; }
 
@@ -70,7 +72,7 @@ message PermissionRequest {
     string permission = 3; // accepts either 'read' or 'write'
 }
 
-message PermissionResponse {string status = 1;}
+message PermissionResponse { string status = 1; }
 
 message ReplicateFileRequest {
     string fileId = 1;
@@ -80,6 +82,13 @@ message ReplicateFileRequest {
 }
 
 message ReplicateFileResponse { string status = 1; }
+
+message ReplicateUpdateRequest {
+    string file_id = 1;
+    string fileContent = 2;
+}
+
+message ReplicateUpdateResponse { string status = 1; }
 
 message ReplicatePermissionRequest {
     string fileId = 1;

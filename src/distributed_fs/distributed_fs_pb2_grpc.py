@@ -54,6 +54,11 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.ReplicateFileResponse.FromString,
         )
+        self.ReplicateUpdateFile = channel.unary_unary(
+            '/DistributedFileSystem/ReplicateUpdateFile',
+            request_serializer=distributed__fs__pb2.ReplicateUpdateRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReplicateUpdateResponse.FromString,
+        )
         self.ReplicatePermissions = channel.unary_unary(
             '/DistributedFileSystem/ReplicatePermissions',
             request_serializer=distributed__fs__pb2.ReplicatePermissionRequest.SerializeToString,
@@ -131,6 +136,12 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReplicateUpdateFile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ReplicatePermissions(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -197,6 +208,11 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             servicer.ReplicateFile,
             request_deserializer=distributed__fs__pb2.ReplicateFileRequest.FromString,
             response_serializer=distributed__fs__pb2.ReplicateFileResponse.SerializeToString,
+        ),
+        'ReplicateUpdateFile': grpc.unary_unary_rpc_method_handler(
+            servicer.ReplicateUpdateFile,
+            request_deserializer=distributed__fs__pb2.ReplicateUpdateRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReplicateUpdateResponse.SerializeToString,
         ),
         'ReplicatePermissions': grpc.unary_unary_rpc_method_handler(
             servicer.ReplicatePermissions,
@@ -362,6 +378,23 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateFile',
                                              distributed__fs__pb2.ReplicateFileRequest.SerializeToString,
                                              distributed__fs__pb2.ReplicateFileResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReplicateUpdateFile(request,
+                            target,
+                            options=(),
+                            channel_credentials=None,
+                            call_credentials=None,
+                            insecure=False,
+                            compression=None,
+                            wait_for_ready=None,
+                            timeout=None,
+                            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateUpdateFile',
+                                             distributed__fs__pb2.ReplicateUpdateRequest.SerializeToString,
+                                             distributed__fs__pb2.ReplicateUpdateResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

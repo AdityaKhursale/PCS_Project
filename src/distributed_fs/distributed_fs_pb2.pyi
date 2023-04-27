@@ -148,6 +148,23 @@ class ReplicatePermissionResponse(_message.Message):
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
 
+class ReplicateUpdateRequest(_message.Message):
+    __slots__ = ["fileContent", "file_id"]
+    FILECONTENT_FIELD_NUMBER: _ClassVar[int]
+    FILE_ID_FIELD_NUMBER: _ClassVar[int]
+    fileContent: str
+    file_id: str
+    def __init__(self, file_id: _Optional[str] = ...,
+                 fileContent: _Optional[str] = ...) -> None: ...
+
+
+class ReplicateUpdateResponse(_message.Message):
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
+
+
 class RestoreRequest(_message.Message):
     __slots__ = ["filename"]
     FILENAME_FIELD_NUMBER: _ClassVar[int]
@@ -192,5 +209,7 @@ class UpdateRequest(_message.Message):
 
 
 class UpdateResponse(_message.Message):
-    __slots__ = []
-    def __init__(self) -> None: ...
+    __slots__ = ["status"]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    status: str
+    def __init__(self, status: _Optional[str] = ...) -> None: ...
