@@ -98,8 +98,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         if len(file_details) == 0:
             return pb.ReadResponse(status="File doesn't exist!")
 
-        owned_files = constants.db_instance.get_owned_files()
-        if file_id not in owned_files and len(file_details['private_key']) == 0:
+        if len(file_details['private_key']) == 0:
             return pb.ReadResponse(status="Permission denied!")
 
         encrypted_data = utils.file.read_file(file_details['file_path'])
@@ -212,16 +211,17 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         if file_id not in owned_files:
             return pb.PermissionResponse(status="Permission denied!")
 
-        # Encode private key for read access.
+        # Encrypt private key for read access and public key if write acccess
+        # is granted. The keys are encrypted using the public key of the node
+        # with whom the file is being shared.
         shared_nodes_public_key = constants.db_instance.get_node_public_key(
             ip_addr)
         file_private_key = utils.encryption.encrypt_key(
             shared_nodes_public_key, file_details['private_key'])
 
-        # Encode public key if write acccess is granted.
         file_public_key = b""
         if permission == "write":
-            file_public_key = utils.encryption.encrypt_binary_data(
+            file_public_key = utils.encryption.encrypt_key(
                 shared_nodes_public_key, file_details['public_key'])
         with grpc.insecure_channel(ip_addr) as channel:
             stub = DistributedFileSystemStub(channel)
@@ -239,14 +239,9 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
 
     def GetFileLock(self, request, context):
         file_id = request.fileId
+        ip_address = request.address
 
-        lock_granted = False
-        if constants.db_instance.is_file_locked(file_id):
-            lock_granted = False
-        else:
-            remote_ip_addr = context.peer()[len("ipv4") + 1:]
-            constants.db_instance.get_file_lock(remote_ip_addr, file_id)
-            lock_granted = True
+        lock_granted = self._get_file_lock(file_id, ip_address)
 
         context.set_code(grpc.StatusCode.OK)
         return pb.FileLockResponse(lockGranted=lock_granted)
@@ -260,9 +255,13 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         if len(file_details) == 0:
             return pb.UpdateResponse(status="File doesn't exist!")
 
-        # Only host with permission can edit the file.
+        is_file_owner = False
         owned_files = constants.db_instance.get_owned_files()
-        if file_id not in owned_files:
+        if file_id in owned_files:
+            is_file_owner = True
+        # Only host with permission can edit the file.
+
+        if not is_file_owner:
             shared = False
             shared_files = constants.db_instance.get_shared_files()
             for file in shared_files:
@@ -271,18 +270,22 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
                     break
             if not shared:
                 return pb.UpdateResponse(status="Permission denied!")
-
         # Get File Lock.
-        file_lock_response = pb.FileLockResponse()
-        with grpc.insecure_channel(file_details['owner']) as channel:
-            stub = DistributedFileSystemStub(channel)
-            file_lock_response = stub.GetFileLock(pb.ReplicateFileRequest(
-                fileId=file_id
-            ))
-        if not file_lock_response.lockGranted:
-            return pb.UpdateResponse(status="Concurrent write not permitted!")
-
-        # Encrypt the content
+        if is_file_owner:
+            if not self._get_file_lock(file_id, constants.ip_addr):
+                return pb.UpdateResponse(status="Concurrent write not permitted!")
+        else:
+            # If shared file then get the lock from file owner.
+            file_lock_response = pb.FileLockResponse()
+            with grpc.insecure_channel(file_details['owner']) as channel:
+                stub = DistributedFileSystemStub(channel)
+                file_lock_response = stub.GetFileLock(pb.FileLockRequest(
+                    fileId=file_id,
+                    address=constants.ip_addr
+                ))
+            if not file_lock_response.lockGranted:
+                return pb.UpdateResponse(status="Concurrent write not permitted!")
+        # Encrypt the content.
         en_file_content = b""
         if overwrite:
             en_file_content = utils.encryption.encrypt_data(
@@ -294,19 +297,32 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
             new_file_content = decrypted_data + file_content
             en_file_content = utils.encryption.encrypt_data(
                 file_details['public_key'], new_file_content)
+        if is_file_owner:
+            # If the current node is file owner then store on local server
+            # and send update to other nodes.
+            utils.file.store_file_to_fs(
+                file_details['file_path'], en_file_content)
 
-        # Store file to filesystem.
-        utils.file.store_file_to_fs(file_details['file_path'], en_file_content)
-
-        # Replicate the update.
-        nodes_in_network = utils.network.getNodesExcept(constants.ip_addr)
-        for node in nodes_in_network:
-            self.logger.info(f"Replicating file '{file_id}' on server: {node}")
-            with grpc.insecure_channel(node) as channel:
+            nodes_in_network = utils.network.getNodesExcept(constants.ip_addr)
+            for node in nodes_in_network:
+                with grpc.insecure_channel(node) as channel:
+                    stub = DistributedFileSystemStub(channel)
+                    stub.ReplicateFile(pb.ReplicateFileRequest(
+                        fileId=file_id,
+                        fileName=base64.b64encode(
+                            file_details['en_file_name']),
+                        owner=constants.ip_addr,
+                        fileContent=base64.b64encode(en_file_content)
+                    ))
+        else:
+            # If the current node is not owner and has right to edit file
+            # then, send the udpate request to file owner for replication.
+            with grpc.insecure_channel(file_details['owner']) as channel:
                 stub = DistributedFileSystemStub(channel)
                 stub.ReplicateUpdateFile(pb.ReplicateUpdateRequest(
                     fileId=file_id,
-                    fileContent=base64.b64encode(en_file_content)
+                    fileContent=base64.b64encode(en_file_content),
+                    address=constants.ip_addr
                 ))
 
         context.set_code(grpc.StatusCode.OK)
@@ -315,11 +331,12 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
     def ReplicateUpdateFile(self, request, context):
         file_id = request.fileId
         en_file_content = base64.b64decode(request.fileContent)
+        request_ip_address = request.address
 
         file_lock_owner_ip = constants.db_instance.get_file_lock_owner_ip(
             file_id)
-        remote_ip_addr = context.peer()[len("ipv4") + 1:]
-        if file_lock_owner_ip != remote_ip_addr:
+
+        if file_lock_owner_ip != request_ip_address:
             return pb.ReplicateUpdateResponse(status="Permission Denied!")
 
         # Drop the file lock.
@@ -345,3 +362,12 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         file_details = constants.db_instance.get_file_details(file_id)
         return utils.encryption.decrypt_data(file_details['private_key'],
                                              file_details['en_file_name'])
+
+    def _get_file_lock(self, file_id, ip_address):
+        lock_granted = False
+        if constants.db_instance.is_file_locked(file_id):
+            lock_granted = False
+        else:
+            constants.db_instance.get_file_lock(ip_address, file_id)
+            lock_granted = True
+        return lock_granted

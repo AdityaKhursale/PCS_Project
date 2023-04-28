@@ -45,10 +45,13 @@ class DeleteResponse(_message.Message):
 
 
 class FileLockRequest(_message.Message):
-    __slots__ = ["fileId"]
+    __slots__ = ["address", "fileId"]
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
     FILEID_FIELD_NUMBER: _ClassVar[int]
+    address: str
     fileId: str
-    def __init__(self, fileId: _Optional[str] = ...) -> None: ...
+    def __init__(self, fileId: _Optional[str] = ...,
+                 address: _Optional[str] = ...) -> None: ...
 
 
 class FileLockResponse(_message.Message):
@@ -161,13 +164,15 @@ class ReplicatePermissionResponse(_message.Message):
 
 
 class ReplicateUpdateRequest(_message.Message):
-    __slots__ = ["fileContent", "fileId"]
+    __slots__ = ["address", "fileContent", "fileId"]
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
     FILECONTENT_FIELD_NUMBER: _ClassVar[int]
     FILEID_FIELD_NUMBER: _ClassVar[int]
+    address: str
     fileContent: str
     fileId: str
-    def __init__(self, fileId: _Optional[str] = ...,
-                 fileContent: _Optional[str] = ...) -> None: ...
+    def __init__(self, fileId: _Optional[str] = ..., fileContent: _Optional[str]
+                 = ..., address: _Optional[str] = ...) -> None: ...
 
 
 class ReplicateUpdateResponse(_message.Message):
