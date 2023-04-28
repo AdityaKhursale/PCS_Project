@@ -195,6 +195,7 @@ class DfsDB:
         cursor.execute(delete_from_replicated_files, [file_id])
         cursor.execute(delete_from_replicated_file_permissions, [file_id])
         cursor.execute(delete_from_file_details, [file_id])
+        cursor.execute(delete_file_lock, [file_id])
 
         self.db_conn.commit()
         cursor.close()

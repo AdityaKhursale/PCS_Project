@@ -259,8 +259,8 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
         owned_files = constants.db_instance.get_owned_files()
         if file_id in owned_files:
             is_file_owner = True
-        # Only host with permission can edit the file.
 
+        # Only host with permission can edit the file.
         if not is_file_owner:
             shared = False
             shared_files = constants.db_instance.get_shared_files()
@@ -270,6 +270,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
                     break
             if not shared:
                 return pb.UpdateResponse(status="Permission denied!")
+
         # Get File Lock.
         if is_file_owner:
             if not self._get_file_lock(file_id, constants.ip_addr):
@@ -285,6 +286,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
                 ))
             if not file_lock_response.lockGranted:
                 return pb.UpdateResponse(status="Concurrent write not permitted!")
+
         # Encrypt the content.
         en_file_content = b""
         if overwrite:
@@ -314,6 +316,9 @@ class DistributedFileSystemService(DistributedFileSystemServicer):
                         owner=constants.ip_addr,
                         fileContent=base64.b64encode(en_file_content)
                     ))
+            
+            # Drop the file lock.
+            constants.db_instance.release_file_lock(file_id)
         else:
             # If the current node is not owner and has right to edit file
             # then, send the udpate request to file owner for replication.
