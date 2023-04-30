@@ -5,11 +5,9 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Op
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-
 class CreateNodeKeyRequest(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
-
 
 class CreateNodeKeyResponse(_message.Message):
     __slots__ = ["status"]
@@ -17,18 +15,15 @@ class CreateNodeKeyResponse(_message.Message):
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
-
 class CreateRequest(_message.Message):
     __slots__ = ["filename"]
     FILENAME_FIELD_NUMBER: _ClassVar[int]
     filename: str
     def __init__(self, filename: _Optional[str] = ...) -> None: ...
 
-
 class CreateResponse(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
-
 
 class DeleteRequest(_message.Message):
     __slots__ = ["filename"]
@@ -36,13 +31,11 @@ class DeleteRequest(_message.Message):
     filename: str
     def __init__(self, filename: _Optional[str] = ...) -> None: ...
 
-
 class DeleteResponse(_message.Message):
     __slots__ = ["status"]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
-
 
 class FileLockRequest(_message.Message):
     __slots__ = ["address", "fileId"]
@@ -50,9 +43,7 @@ class FileLockRequest(_message.Message):
     FILEID_FIELD_NUMBER: _ClassVar[int]
     address: str
     fileId: str
-    def __init__(self, fileId: _Optional[str] = ...,
-                 address: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, fileId: _Optional[str] = ..., address: _Optional[str] = ...) -> None: ...
 
 class FileLockResponse(_message.Message):
     __slots__ = ["lockGranted"]
@@ -60,18 +51,15 @@ class FileLockResponse(_message.Message):
     lockGranted: bool
     def __init__(self, lockGranted: bool = ...) -> None: ...
 
-
 class ListRequest(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
-
 
 class ListResponse(_message.Message):
     __slots__ = ["files"]
     FILES_FIELD_NUMBER: _ClassVar[int]
     files: _containers.RepeatedScalarFieldContainer[str]
     def __init__(self, files: _Optional[_Iterable[str]] = ...) -> None: ...
-
 
 class PermissionRequest(_message.Message):
     __slots__ = ["filename", "hostname", "permission"]
@@ -81,9 +69,7 @@ class PermissionRequest(_message.Message):
     filename: str
     hostname: str
     permission: str
-    def __init__(self, filename: _Optional[str] = ..., hostname: _Optional[str]
-                 = ..., permission: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, filename: _Optional[str] = ..., hostname: _Optional[str] = ..., permission: _Optional[str] = ...) -> None: ...
 
 class PermissionResponse(_message.Message):
     __slots__ = ["status"]
@@ -91,13 +77,11 @@ class PermissionResponse(_message.Message):
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
-
 class ReadRequest(_message.Message):
     __slots__ = ["filename"]
     FILENAME_FIELD_NUMBER: _ClassVar[int]
     filename: str
     def __init__(self, filename: _Optional[str] = ...) -> None: ...
-
 
 class ReadResponse(_message.Message):
     __slots__ = ["filecontent", "status"]
@@ -105,9 +89,7 @@ class ReadResponse(_message.Message):
     STATUS_FIELD_NUMBER: _ClassVar[int]
     filecontent: str
     status: str
-    def __init__(
-        self, filecontent: _Optional[str] = ..., status: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, filecontent: _Optional[str] = ..., status: _Optional[str] = ...) -> None: ...
 
 class ReplicateDeleteRequest(_message.Message):
     __slots__ = ["fileId"]
@@ -115,13 +97,11 @@ class ReplicateDeleteRequest(_message.Message):
     fileId: str
     def __init__(self, fileId: _Optional[str] = ...) -> None: ...
 
-
 class ReplicateDeleteResponse(_message.Message):
     __slots__ = ["status"]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
-
 
 class ReplicateFileRequest(_message.Message):
     __slots__ = ["fileContent", "fileId", "fileName", "owner"]
@@ -133,16 +113,13 @@ class ReplicateFileRequest(_message.Message):
     fileId: str
     fileName: str
     owner: str
-    def __init__(self, fileId: _Optional[str] = ..., fileName: _Optional[str] = ...,
-                 owner: _Optional[str] = ..., fileContent: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, fileId: _Optional[str] = ..., fileName: _Optional[str] = ..., owner: _Optional[str] = ..., fileContent: _Optional[str] = ...) -> None: ...
 
 class ReplicateFileResponse(_message.Message):
     __slots__ = ["status"]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
-
 
 class ReplicatePermissionRequest(_message.Message):
     __slots__ = ["fileId", "filePrivateKey", "filePublicKey"]
@@ -152,9 +129,7 @@ class ReplicatePermissionRequest(_message.Message):
     fileId: str
     filePrivateKey: str
     filePublicKey: str
-    def __init__(self, fileId: _Optional[str] = ..., filePublicKey: _Optional[str]
-                 = ..., filePrivateKey: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, fileId: _Optional[str] = ..., filePublicKey: _Optional[str] = ..., filePrivateKey: _Optional[str] = ...) -> None: ...
 
 class ReplicatePermissionResponse(_message.Message):
     __slots__ = ["status"]
@@ -162,6 +137,15 @@ class ReplicatePermissionResponse(_message.Message):
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
+class ReplicateRestoreRequest(_message.Message):
+    __slots__ = ["filePath"]
+    FILEPATH_FIELD_NUMBER: _ClassVar[int]
+    filePath: str
+    def __init__(self, filePath: _Optional[str] = ...) -> None: ...
+
+class ReplicateRestoreResponse(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...
 
 class ReplicateUpdateRequest(_message.Message):
     __slots__ = ["address", "fileContent", "fileId"]
@@ -171,9 +155,7 @@ class ReplicateUpdateRequest(_message.Message):
     address: str
     fileContent: str
     fileId: str
-    def __init__(self, fileId: _Optional[str] = ..., fileContent: _Optional[str]
-                 = ..., address: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, fileId: _Optional[str] = ..., fileContent: _Optional[str] = ..., address: _Optional[str] = ...) -> None: ...
 
 class ReplicateUpdateResponse(_message.Message):
     __slots__ = ["status"]
@@ -181,18 +163,15 @@ class ReplicateUpdateResponse(_message.Message):
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
-
 class RestoreRequest(_message.Message):
     __slots__ = ["filename"]
     FILENAME_FIELD_NUMBER: _ClassVar[int]
     filename: str
     def __init__(self, filename: _Optional[str] = ...) -> None: ...
 
-
 class RestoreResponse(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
-
 
 class UpdateKeyRequest(_message.Message):
     __slots__ = ["address", "hostname", "publicKey"]
@@ -202,16 +181,13 @@ class UpdateKeyRequest(_message.Message):
     address: str
     hostname: str
     publicKey: str
-    def __init__(self, hostname: _Optional[str] = ..., address: _Optional[str]
-                 = ..., publicKey: _Optional[str] = ...) -> None: ...
-
+    def __init__(self, hostname: _Optional[str] = ..., address: _Optional[str] = ..., publicKey: _Optional[str] = ...) -> None: ...
 
 class UpdateKeyResponse(_message.Message):
     __slots__ = ["status"]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
-
 
 class UpdateRequest(_message.Message):
     __slots__ = ["filecontent", "filename", "overwrite"]
@@ -221,9 +197,7 @@ class UpdateRequest(_message.Message):
     filecontent: str
     filename: str
     overwrite: bool
-    def __init__(self, filename: _Optional[str] = ...,
-                 filecontent: _Optional[str] = ..., overwrite: bool = ...) -> None: ...
-
+    def __init__(self, filename: _Optional[str] = ..., filecontent: _Optional[str] = ..., overwrite: bool = ...) -> None: ...
 
 class UpdateResponse(_message.Message):
     __slots__ = ["status"]

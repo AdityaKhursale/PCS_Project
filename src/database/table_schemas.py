@@ -53,3 +53,11 @@ TABLES['file_locks'] = (
     " `ip_address` varchar(256) NOT NULL,"
     "  PRIMARY KEY (`file_id`)"
     ") ENGINE=InnoDB")
+
+TABLES['deleted_files'] = (
+    "CREATE TABLE `deleted_files` ("
+    " `file_id` varchar(256) NOT NULL,"
+    " `public_key` varchar(2048),"
+    " `private_key` varchar(2048),"
+    "  PRIMARY KEY (`file_id`)"
+    ") ENGINE=InnoDB")

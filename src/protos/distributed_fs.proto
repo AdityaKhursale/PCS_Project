@@ -32,6 +32,8 @@ service DistributedFileSystem {
     rpc ReplicateDeleteFile(ReplicateDeleteRequest)
         returns (ReplicateDeleteResponse) {}
 
+    rpc ReplicateRestore(ReplicateRestoreRequest) returns (ReplicateRestoreResponse) {}
+
     rpc UpdateNodePublicKey(UpdateKeyRequest) returns (UpdateKeyResponse) {}
 
     rpc GetFileLock(FileLockRequest) returns (FileLockResponse) {}
@@ -108,6 +110,10 @@ message ReplicatePermissionResponse { string status = 1; }
 message ReplicateDeleteRequest { string fileId = 1; }
 
 message ReplicateDeleteResponse { string status = 1; }
+
+message ReplicateRestoreRequest { string filePath = 1;}
+
+message ReplicateRestoreResponse {}
 
 message UpdateKeyRequest {
     string hostname = 1;

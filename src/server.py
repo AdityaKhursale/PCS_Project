@@ -1,4 +1,5 @@
 import grpc
+import os
 
 from concurrent import futures
 from distributed_fs.distributed_fs_pb2_grpc import (
@@ -19,13 +20,21 @@ class Server:
     def address(self):
         return ":".join((self.ip, self.port))
 
+    @property
+    def root(self):
+        return os.path.join(constants.ASSETS, self.host)
+
+    @property
+    def trashstore(self):
+        return os.path.join(self.root, ".trash")
+
     def run(self, maxWorkers=10):
         # TODO: Handle this globals better
         constants.setupGlobalConstants(self.address, self.host)
         server = grpc.server(
             futures.ThreadPoolExecutor(max_workers=maxWorkers))
         add_DistributedFileSystemServicer_to_server(
-            DistributedFileSystemService(), server
+            DistributedFileSystemService(self.root, self.trashstore), server
         )
         server.add_insecure_port(self.address)
         server.start()

@@ -25,6 +25,7 @@ class ActionPerformer:
             write to file       update <filename> < "text"
             append to file      update <filename> << "text"
             delete file         delete <filename>
+            restore file        restore <filename>
             list files          list
             grant permissions   permit <filename> <hostname> <read/write>
             create node keys    keys
@@ -87,7 +88,7 @@ class ActionPerformer:
     @useDistributedFileSystemStub(constants.ip_addr)
     def restoreFile(**kwargs):
         stub = kwargs["stub"]
-        stub.GrantPermissions(distributed_fs_pb2.RestoreRequest(
+        stub.RestoreFile(distributed_fs_pb2.RestoreRequest(
             filename=kwargs["filename"]
         ))
         return True

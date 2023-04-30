@@ -74,6 +74,11 @@ class DistributedFileSystemStub(object):
             request_serializer=distributed__fs__pb2.ReplicateDeleteRequest.SerializeToString,
             response_deserializer=distributed__fs__pb2.ReplicateDeleteResponse.FromString,
         )
+        self.ReplicateRestore = channel.unary_unary(
+            '/DistributedFileSystem/ReplicateRestore',
+            request_serializer=distributed__fs__pb2.ReplicateRestoreRequest.SerializeToString,
+            response_deserializer=distributed__fs__pb2.ReplicateRestoreResponse.FromString,
+        )
         self.UpdateNodePublicKey = channel.unary_unary(
             '/DistributedFileSystem/UpdateNodePublicKey',
             request_serializer=distributed__fs__pb2.UpdateKeyRequest.SerializeToString,
@@ -165,6 +170,12 @@ class DistributedFileSystemServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReplicateRestore(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def UpdateNodePublicKey(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -239,6 +250,11 @@ def add_DistributedFileSystemServicer_to_server(servicer, server):
             servicer.ReplicateDeleteFile,
             request_deserializer=distributed__fs__pb2.ReplicateDeleteRequest.FromString,
             response_serializer=distributed__fs__pb2.ReplicateDeleteResponse.SerializeToString,
+        ),
+        'ReplicateRestore': grpc.unary_unary_rpc_method_handler(
+            servicer.ReplicateRestore,
+            request_deserializer=distributed__fs__pb2.ReplicateRestoreRequest.FromString,
+            response_serializer=distributed__fs__pb2.ReplicateRestoreResponse.SerializeToString,
         ),
         'UpdateNodePublicKey': grpc.unary_unary_rpc_method_handler(
             servicer.UpdateNodePublicKey,
@@ -462,6 +478,23 @@ class DistributedFileSystem(object):
         return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateDeleteFile',
                                              distributed__fs__pb2.ReplicateDeleteRequest.SerializeToString,
                                              distributed__fs__pb2.ReplicateDeleteResponse.FromString,
+                                             options, channel_credentials,
+                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReplicateRestore(request,
+                         target,
+                         options=(),
+                         channel_credentials=None,
+                         call_credentials=None,
+                         insecure=False,
+                         compression=None,
+                         wait_for_ready=None,
+                         timeout=None,
+                         metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/DistributedFileSystem/ReplicateRestore',
+                                             distributed__fs__pb2.ReplicateRestoreRequest.SerializeToString,
+                                             distributed__fs__pb2.ReplicateRestoreResponse.FromString,
                                              options, channel_credentials,
                                              insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

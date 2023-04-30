@@ -70,6 +70,15 @@ add_or_update_permission_entry = ("INSERT INTO granted_permissions"
                                   " ON DUPLICATE KEY UPDATE"
                                   " permission=%s")
 
+store_deleted_file_keys = ("INSERT IGNORE INTO deleted_files"
+                           " (file_id, public_key, private_key)"
+                           " VALUES (%s, %s, %s)")
+
+
+query_deleted_file_keys = ("SELECT public_key, private_key"
+                           " FROM deleted_files"
+                           " WHERE file_id = %s")
+
 
 class DfsDB:
     def __init__(self, db_name):
@@ -260,3 +269,24 @@ class DfsDB:
 
         self.db_conn.commit()
         cursor.close()
+
+    def insert_restore_entry(self, file_id, public_key, private_key):
+        cursor = self.db_conn.cursor()
+
+        file_info = (file_id, public_key, private_key)
+        cursor.execute(store_deleted_file_keys, file_info)
+
+        self.db_conn.commit()
+        cursor.close()
+
+    def get_deleted_file_keys(self, file_id):
+        cursor = self.db_conn.cursor()
+
+        cursor.execute(query_deleted_file_keys, [file_id])
+
+        public_key, private_key = None, None
+        for resp in cursor:
+            public_key = resp[0]
+            private_key = resp[1]
+        cursor.close()
+        return public_key, private_key

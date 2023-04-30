@@ -1,4 +1,5 @@
 import os
+import shutil
 import re
 from utils import constants
 import uuid
@@ -37,6 +38,10 @@ def delete_file(file_path):
 
 def is_file_exist(file_path):
     return os.path.isfile(file_path)
+
+
+def moveFile(src, dest):
+    return shutil.move(src, dest)
 
 
 def createDir(dirname):
