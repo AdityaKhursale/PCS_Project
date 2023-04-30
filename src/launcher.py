@@ -31,8 +31,6 @@ def main():
     # pylint: disable=import-outside-toplevel
 
     # Lauch server
-
-    # TODO: This is tied to static network.cfg, change this to dynamic ?
     from server import Server  # Do not change this import
     serverObj = Server(args.ip, args.port, args.hostname)
     serverProcess = multiprocessing.Process(target=serverObj.run)
