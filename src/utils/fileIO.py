@@ -3,8 +3,6 @@ import re
 import shutil
 import uuid
 
-from utils import constants
-
 
 def getFileId(fileName):
     return str(uuid.uuid5(uuid.NAMESPACE_DNS, fileName))

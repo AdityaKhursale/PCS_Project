@@ -1,104 +1,138 @@
-import database.db as db
 import mysql.connector
 
-from mysql.connector import errorcode
 from database.table_schemas import TABLES
-from utils.misc import getLogger
+from mysql.connector import errorcode
 from utils import constants
+from utils.misc import getLogger
 
-add_owned_files = ("INSERT INTO owned_files (file_id) VALUES (%s)")
+addOwnedFiles = ("INSERT INTO owned_files (file_id) VALUES (%s)")
 
-add_replicated_files = ("INSERT INTO replicated_files (file_id) VALUES (%s)")
+addReplicatedFiles = ("INSERT INTO replicated_files (file_id) VALUES (%s)")
 
-add_file_details = ("INSERT INTO file_details"
-                    " (file_id, en_file_name, owner, path, public_key,"
-                    " private_key)"
-                    " VALUES (%s, %s, %s, %s, %s, %s)")
+addFileDetails = ("INSERT INTO file_details"
+                  " (file_id, en_file_name, owner, path, public_key,"
+                  " private_key)"
+                  " VALUES (%s, %s, %s, %s, %s, %s)")
 
-query_file_details = ("SELECT file_id, en_file_name, owner, path, public_key,"
-                      " private_key FROM file_details"
-                      " WHERE file_id = %s")
-
-add_or_update_node_details = ("INSERT INTO node_details"
-                              " (ip_address, hostname, public_key)"
-                              " VALUES (%s, %s, %s)"
-                              " ON DUPLICATE KEY UPDATE"
-                              " hostname=%s, public_key=%s")
-
-query_node_public_key = (
-    "SELECT public_key FROM node_details WHERE ip_address = %s")
-
-query_all_owned_files = ("SELECT file_id FROM owned_files")
-
-query_all_shared_files = ("SELECT file_id, permission_write"
-                          " FROM replicated_file_permissions")
-
-delete_from_owned_files = ("DELETE FROM owned_files WHERE file_id = %s")
-
-delete_from_replicated_files = ("DELETE FROM"
-                                " replicated_files WHERE file_id = %s")
-
-delete_from_replicated_file_permissions = ("DELETE FROM"
-                                           " replicated_file_permissions"
-                                           " WHERE file_id = %s")
-
-delete_from_file_details = ("DELETE FROM file_details WHERE file_id = %s")
-
-add_or_update_permission_entry_repl = ("INSERT INTO"
-                                       " replicated_file_permissions"
-                                       " (file_id, permission_write)"
-                                       " VALUES (%s, %s)"
-                                       " ON DUPLICATE KEY UPDATE"
-                                       " permission_write=%s")
-
-update_file_info = ("UPDATE file_details"
-                    " SET public_key = %s, private_key = %s"
+queryFileDetails = ("SELECT file_id, en_file_name, owner, path, public_key,"
+                    " private_key FROM file_details"
                     " WHERE file_id = %s")
 
-query_file_lock = (
+addOrUpdateNodeDetails = ("INSERT INTO node_details"
+                          " (ip_address, hostname, public_key)"
+                          " VALUES (%s, %s, %s)"
+                          " ON DUPLICATE KEY UPDATE"
+                          " hostname=%s, public_key=%s")
+
+queryNodePublicKey = (
+    "SELECT public_key FROM node_details WHERE ip_address = %s")
+
+queryAllOwnedFiles = ("SELECT file_id FROM owned_files")
+
+queryAllSharedFiles = ("SELECT file_id, permission_write"
+                       " FROM replicated_file_permissions")
+
+deleteFromOwnedFiles = ("DELETE FROM owned_files WHERE file_id = %s")
+
+deleteFromReplicatedFiles = ("DELETE FROM"
+                             " replicated_files WHERE file_id = %s")
+
+deleteFromReplicatedFilePermissions = ("DELETE FROM"
+                                       " replicated_file_permissions"
+                                       " WHERE file_id = %s")
+
+deleteFromFileDetails = ("DELETE FROM file_details WHERE file_id = %s")
+
+addOrUpdatePermissionEntryRepl = ("INSERT INTO"
+                                  " replicated_file_permissions"
+                                  " (file_id, permission_write)"
+                                  " VALUES (%s, %s)"
+                                  " ON DUPLICATE KEY UPDATE"
+                                  " permission_write=%s")
+
+updateFileInfo = ("UPDATE file_details"
+                  " SET public_key = %s, private_key = %s"
+                  " WHERE file_id = %s")
+
+queryFileLock = (
     "SELECT locked, ip_address FROM file_locks where file_id = %s")
 
-create_file_lock = ("INSERT INTO file_locks"
-                    " (file_id, locked, ip_address)"
-                    " VALUES (%s, %s, %s)")
+createFileLock = ("INSERT INTO file_locks"
+                  " (file_id, locked, ip_address)"
+                  " VALUES (%s, %s, %s)")
 
-delete_file_lock = ("DELETE FROM file_locks WHERE file_id = %s")
+deleteFileLock = ("DELETE FROM file_locks WHERE file_id = %s")
 
-add_or_update_permission_entry = ("INSERT INTO granted_permissions"
-                                  " (file_id, ip_address, permission)"
-                                  " VALUES (%s, %s, %s)"
-                                  " ON DUPLICATE KEY UPDATE"
-                                  " permission=%s")
+addOrUpdatePermissionEntry = ("INSERT INTO granted_permissions"
+                              " (file_id, ip_address, permission)"
+                              " VALUES (%s, %s, %s)"
+                              " ON DUPLICATE KEY UPDATE"
+                              " permission=%s")
 
-store_deleted_file_keys = ("INSERT IGNORE INTO deleted_files"
-                           " (file_id, public_key, private_key)"
-                           " VALUES (%s, %s, %s)")
+storeDeletedFileKeys = ("INSERT IGNORE INTO deleted_files"
+                        " (file_id, public_key, private_key)"
+                        " VALUES (%s, %s, %s)")
 
 
-query_deleted_file_keys = ("SELECT public_key, private_key"
-                           " FROM deleted_files"
-                           " WHERE file_id = %s")
+queryDeletedFileKeys = ("SELECT public_key, private_key"
+                        " FROM deleted_files"
+                        " WHERE file_id = %s")
 
 
 class DfsDB:
-    def __init__(self, db_name):
-        self.db_name = db_name
-        self.db_conn = db.db_conn(db_name)
+    def __init__(self, dbName):
+        self.dbName = dbName
         self.logger = getLogger(
             "database", {"$HOSTNAME": constants.host_name})
-        self.create_dfs_tables()
+        self.connect()
+        self.createTables()
 
-    def create_dfs_tables(self):
-        cursor = self.db_conn.cursor()
+    @property
+    def username(self):
+        return "pcs"
 
-        for table_name in TABLES:
-            table_description = TABLES[table_name]
+    @property
+    def password(self):
+        return ""
+
+    def connect(self):
+        # TODO: Check and update host
+        self.conn = mysql.connector.connect(
+            user=self.username, password=self.password, host="localhost")
+        cursor = self.conn.cursor()
+
+        try:
+            cursor.execute("USE {}".format(self.dbName))
+        except mysql.connector.Error as e:
+            self.logger.info(f"Database {self.dbName} does not exist")
+            if e.errno == errorcode.ER_BAD_DB_ERROR:
+                try:
+                    cursor.execute(
+                        f"CREATE DATABASE {self.dbName}"
+                        " DEFAULT CHARACTER SET 'utf8'"
+                    )
+                except mysql.connector.Error as err:
+                    self.logger.error(f"Failed to create database, {err}")
+                    exit(1)
+                self.logger.info("Database {self.dbName} created successfully")
+                self.conn.database = self.dbName
+            else:
+                self.logger.error(e)
+                exit(1)
+
+        cursor.close()
+
+    def createTables(self):
+        cursor = self.conn.cursor()
+
+        for tableName in TABLES:
+            tableDescription = TABLES[tableName]
             try:
-                self.logger.info(f"Creating table {table_name}")
-                cursor.execute(table_description)
+                self.logger.info(f"Creating table {tableName}")
+                cursor.execute(tableDescription)
             except mysql.connector.Error as err:
                 if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                    self.logger.info(f"Table {table_name} already exists.")
+                    self.logger.info(f"Table {tableName} already exists.")
                 else:
                     self.logger.error(err.msg)
             else:
@@ -106,187 +140,157 @@ class DfsDB:
 
         cursor.close()
 
-    def save_new_file_info(self, file_id, file_path,
-                           en_file_name, owner, public_key, private_key):
+    def saveNewFileInfo(self, fileId, filePath,
+                        encryptedFileName, owner, publicKey, privateKey):
         # Add entry to tables `owned_files` and `file_details`.
-        file_info = (file_id, en_file_name, owner,
-                     file_path, public_key, private_key)
-
-        cursor = self.db_conn.cursor()
-
-        cursor.execute(add_owned_files, [file_id])
-        cursor.execute(add_file_details, file_info)
-
-        self.db_conn.commit()
+        fileInfo = (fileId, encryptedFileName, owner,
+                    filePath, publicKey, privateKey)
+        cursor = self.conn.cursor()
+        cursor.execute(addOwnedFiles, [fileId])
+        cursor.execute(addFileDetails, fileInfo)
+        self.conn.commit()
         cursor.close()
 
-    def save_replication_file_info(self, file_id, file_path,
-                                   en_file_name, owner):
+    def saveReplicationFileInfo(self, fileId, filePath,
+                                encryptedFileName, owner):
         # Add entry to tables `replicated_files` and `file_details`.
-        file_info = (file_id, en_file_name, owner, file_path, "", "")
-
-        cursor = self.db_conn.cursor()
-
-        cursor.execute(add_replicated_files, [file_id])
-        cursor.execute(add_file_details, file_info)
-
-        self.db_conn.commit()
+        fileInfo = (fileId, encryptedFileName, owner, filePath, "", "")
+        cursor = self.conn.cursor()
+        cursor.execute(addReplicatedFiles, [fileId])
+        cursor.execute(addFileDetails, fileInfo)
+        self.conn.commit()
         cursor.close()
 
-    def get_file_details(self, file_id):
-        file_details = {}
-        cursor = self.db_conn.cursor()
-        cursor.execute(query_file_details, [file_id])
+    def getFileDetails(self, fileId):
+        fileDetails = {}
+        cursor = self.conn.cursor()
+        cursor.execute(queryFileDetails, [fileId])
 
-        for (file_id, en_file_name, owner, file_path, public_key,
-             private_key) in cursor:
-            # There will be only one record in the query response.
-            file_details['file_id'] = file_id
-            file_details['en_file_name'] = en_file_name
-            file_details['owner'] = owner
-            file_details['file_path'] = file_path
-            file_details['public_key'] = public_key
-            file_details['private_key'] = private_key
+        for (fileId, encryptedFileName, owner, filePath, publicKey,
+             privateKey) in cursor:
+            # There will be only one record in the query response
+            fileDetails['file_id'] = fileId
+            fileDetails['en_file_name'] = encryptedFileName
+            fileDetails['owner'] = owner
+            fileDetails['file_path'] = filePath
+            fileDetails['public_key'] = publicKey
+            fileDetails['private_key'] = privateKey
 
         cursor.close()
+        return fileDetails
 
-        return file_details
-
-    def add_or_update_node_public_key(self, address, hostname, public_key):
-        cursor = self.db_conn.cursor()
-
-        node_info = (address, hostname, public_key, hostname, public_key)
-        cursor.execute(add_or_update_node_details, node_info)
-
-        self.db_conn.commit()
+    def addOrUpdateNodePublicKey(self, address, hostname, publicKey):
+        cursor = self.conn.cursor()
+        nodeInfo = (address, hostname, publicKey, hostname, publicKey)
+        cursor.execute(addOrUpdateNodeDetails, nodeInfo)
+        self.conn.commit()
         cursor.close()
 
-    def get_node_public_key(self, address):
-        public_key = b""
-        cursor = self.db_conn.cursor()
-        cursor.execute(query_node_public_key, [address])
-
+    def getNodePublicKey(self, address):
+        publicKey = b""
+        cursor = self.conn.cursor()
+        cursor.execute(queryNodePublicKey, [address])
         for row in cursor:
-            public_key = row[0]
-
+            publicKey = row[0]
         cursor.close()
-        return public_key
+        return publicKey
 
-    def get_owned_files(self):
-        owned_files = []
-        cursor = self.db_conn.cursor()
-        cursor.execute(query_all_owned_files)
-
+    def getOwnedFiles(self):
+        ownedFiles = []
+        cursor = self.conn.cursor()
+        cursor.execute(queryAllOwnedFiles)
         for row in cursor:
-            owned_files.append(row[0])
-
+            ownedFiles.append(row[0])
         cursor.close()
-        return owned_files
+        return ownedFiles
 
-    def get_shared_files(self):
-        shared_files = []
-        cursor = self.db_conn.cursor()
-        cursor.execute(query_all_shared_files)
-
+    def getSharedFiles(self):
+        sharedFiles = []
+        cursor = self.conn.cursor()
+        cursor.execute(queryAllSharedFiles)
         for row in cursor:
-            shared_files.append({
+            sharedFiles.append({
                 'file_id': row[0],
                 'write': row[1]
             })
-
         cursor.close()
-        return shared_files
+        return sharedFiles
 
-    def delete_file_entry(self, file_id):
-        cursor = self.db_conn.cursor()
-
-        cursor.execute(delete_from_owned_files, [file_id])
-        cursor.execute(delete_from_replicated_files, [file_id])
-        cursor.execute(delete_from_replicated_file_permissions, [file_id])
-        cursor.execute(delete_from_file_details, [file_id])
-        cursor.execute(delete_file_lock, [file_id])
-
-        self.db_conn.commit()
+    def DeleteFileEntry(self, fileId):
+        cursor = self.conn.cursor()
+        cursor.execute(deleteFromOwnedFiles, [fileId])
+        cursor.execute(deleteFromReplicatedFiles, [fileId])
+        cursor.execute(deleteFromReplicatedFilePermissions, [fileId])
+        cursor.execute(deleteFromFileDetails, [fileId])
+        cursor.execute(deleteFileLock, [fileId])
+        self.conn.commit()
         cursor.close()
 
-    def add_permission_entry(self, file_id, is_write_permission):
-        cursor = self.db_conn.cursor()
-
-        permission_info = (file_id, is_write_permission, is_write_permission)
-        cursor.execute(add_or_update_permission_entry_repl, permission_info)
-        self.db_conn.commit()
+    def addPermissionEntry(self, fileId, writePermission):
+        cursor = self.conn.cursor()
+        permissionInfo = (fileId, writePermission, writePermission)
+        cursor.execute(addOrUpdatePermissionEntryRepl, permissionInfo)
+        self.conn.commit()
         cursor.close()
 
-    def update_file_details(self, file_id, private_key, public_key):
-        cursor = self.db_conn.cursor()
-
-        file_info = (public_key, private_key, file_id)
-        cursor.execute(update_file_info, file_info)
-
-        self.db_conn.commit()
+    def updateFileDetails(self, fileId, privateKey, publicKey):
+        cursor = self.conn.cursor()
+        fileInfo = (publicKey, privateKey, fileId)
+        cursor.execute(updateFileInfo, fileInfo)
+        self.conn.commit()
         cursor.close()
 
-    def is_file_locked(self, file_id):
-        cursor = self.db_conn.cursor()
-        cursor.execute(query_file_lock, [file_id])
-
-        file_locked = False
+    def isFileLocked(self, fileId):
+        cursor = self.conn.cursor()
+        cursor.execute(queryFileLock, [fileId])
+        fileLocked = False
         for row in cursor:
-            file_locked = row[0]
-
+            fileLocked = row[0]
         cursor.close()
-        return file_locked
+        return fileLocked
 
-    def get_file_lock_owner_ip(self, file_id):
-        cursor = self.db_conn.cursor()
-        cursor.execute(query_file_lock, [file_id])
-
-        ip_address = ""
+    def getFileLockOwnerIp(self, fileId):
+        cursor = self.conn.cursor()
+        cursor.execute(queryFileLock, [fileId])
+        ipAddress = ""
         for row in cursor:
-            ip_address = row[1]
-
+            ipAddress = row[1]
         cursor.close()
-        return ip_address
+        return ipAddress
 
-    def get_file_lock(self, ip_address, file_id):
-        cursor = self.db_conn.cursor()
-        lock_info = [file_id, 1, ip_address]
-        cursor.execute(create_file_lock, lock_info)
-        self.db_conn.commit()
-        cursor.close()
-
-    def release_file_lock(self, file_id):
-        cursor = self.db_conn.cursor()
-        cursor.execute(delete_file_lock, [file_id])
-        self.db_conn.commit()
+    def getFileLock(self, ipAddress, fileId):
+        cursor = self.conn.cursor()
+        lockInfo = [fileId, 1, ipAddress]
+        cursor.execute(createFileLock, lockInfo)
+        self.conn.commit()
         cursor.close()
 
-    def add_granted_permission_entry(self, file_id, ip_address, permission):
-        cursor = self.db_conn.cursor()
-
-        permission_info = (file_id, ip_address, permission, permission)
-        cursor.execute(add_or_update_permission_entry, permission_info)
-
-        self.db_conn.commit()
+    def releaseFileLock(self, fileId):
+        cursor = self.conn.cursor()
+        cursor.execute(deleteFileLock, [fileId])
+        self.conn.commit()
         cursor.close()
 
-    def insert_restore_entry(self, file_id, public_key, private_key):
-        cursor = self.db_conn.cursor()
-
-        file_info = (file_id, public_key, private_key)
-        cursor.execute(store_deleted_file_keys, file_info)
-
-        self.db_conn.commit()
+    def addGrantedPermissionEntry(self, fileId, ipAddress, permission):
+        cursor = self.conn.cursor()
+        permissionInfo = (fileId, ipAddress, permission, permission)
+        cursor.execute(addOrUpdatePermissionEntry, permissionInfo)
+        self.conn.commit()
         cursor.close()
 
-    def get_deleted_file_keys(self, file_id):
-        cursor = self.db_conn.cursor()
+    def insertRestoreEntry(self, fileId, publicKey, privateKey):
+        cursor = self.conn.cursor()
+        fileInfo = (fileId, publicKey, privateKey)
+        cursor.execute(storeDeletedFileKeys, fileInfo)
+        self.conn.commit()
+        cursor.close()
 
-        cursor.execute(query_deleted_file_keys, [file_id])
-
-        public_key, private_key = None, None
+    def getDeletedFileKeys(self, fileId):
+        cursor = self.conn.cursor()
+        cursor.execute(queryDeletedFileKeys, [fileId])
+        publicKey, privateKey = None, None
         for resp in cursor:
-            public_key = resp[0]
-            private_key = resp[1]
+            publicKey = resp[0]
+            privateKey = resp[1]
         cursor.close()
-        return public_key, private_key
+        return publicKey, privateKey

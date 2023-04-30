@@ -6,6 +6,7 @@ from utils.network import isValidIpAddress
 
 
 def parseArgs():
+    # pylint: disable=invalid-name
     def checkIp(ip):
         if not isValidIpAddress(ip):
             raise argparse.ArgumentTypeError(f"{ip} is not a valid ip address")
@@ -27,6 +28,8 @@ def main():
     constants.setupGlobalConstants(
         ":".join((args.ip, args.port)), args.hostname
     )
+
+    # pylint: disable=import-outside-toplevel
 
     # Lauch server
     from server import Server  # Do not changet this import

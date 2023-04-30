@@ -1,7 +1,9 @@
-import grpc
 import os
 
 from concurrent import futures
+
+import grpc
+
 from distributed_fs.distributed_fs_pb2_grpc import (
     add_DistributedFileSystemServicer_to_server)
 from distributed_fs.distributed_fs_service import DistributedFileSystemService
@@ -10,6 +12,7 @@ from utils.misc import getLogger
 
 
 class Server:
+    # pylint: disable=invalid-name
     def __init__(self, ip, port, host):
         self.ip = ip
         self.port = port
