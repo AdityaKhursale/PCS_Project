@@ -242,7 +242,7 @@ class DistributedFileSystemService(DistributedFileSystemServicer, metaclass=Sile
 
     def GrantPermissions(self, request, context):
         fileId = fileIO.getFileId(request.filename)
-        ipAddr = request.hostname
+        ipAddr = constants.HOST_ADDRESS_BY_NAME[request.hostname]
         permission = request.permission
         fileDetails = constants.DB_INSTANCE.getFileDetails(fileId)
 

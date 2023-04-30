@@ -15,8 +15,24 @@ def writeBinaryFile(filePath, fileContent):
 
 
 def readBinaryFile(filePath):
-    with open(filePath, "rb") as f:
-        fileContent = f.read()
+    fileContent = b""
+    if fileExists(filePath):
+        with open(filePath, "rb") as f:
+            fileContent = f.read()
+    return fileContent
+
+
+def writeFile(filePath, fileContent):
+    if createDir(os.path.dirname(filePath)):
+        with open(filePath, "w", encoding="utf-8") as f:
+            f.write(fileContent)
+
+
+def readFile(filePath):
+    fileContent = ""
+    if fileExists(filePath):
+        with open(filePath, "r", encoding="utf-8") as f:
+            fileContent = f.read()
     return fileContent
 
 

@@ -72,7 +72,7 @@ message RestoreResponse {}
 
 message PermissionRequest {
     string filename = 1;
-    string hostname = 2; // for now accept 127.0.0.1 : 50051
+    string hostname = 2;
     string permission = 3; // accepts either 'read' or 'write'
 }
 

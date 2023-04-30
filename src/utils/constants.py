@@ -1,13 +1,12 @@
 import os
 
 from database.dfs_db import DfsDB
+from utils.misc import HostAddressMapper
 
 # Configs
 
 CONFIG_PATH = os.path.join("src", "configs")
-NETWORK_CFG_FILE = "network.cfg"
 LOGGING_CFG_FILE = "logging_config.yml"
-NETWORK_CFG = os.path.join(CONFIG_PATH, NETWORK_CFG_FILE)
 LOGGING_CFG = os.path.join(CONFIG_PATH, LOGGING_CFG_FILE)
 
 # Logs
@@ -23,6 +22,7 @@ ASSETS = os.path.join("assets")
 HOST_NAME = ""
 ADDRESS = ""
 DB_INSTANCE = None
+HOST_ADDRESS_BY_NAME = HostAddressMapper()
 
 # pylint: disable=global-statement
 
@@ -32,4 +32,9 @@ def setupGlobalConstants(address, host):
 
     HOST_NAME = host
     ADDRESS = address
+    HOST_ADDRESS_BY_NAME[HOST_NAME] = ADDRESS
     DB_INSTANCE = DfsDB(HOST_NAME)
+
+
+def cleanup():
+    del HOST_ADDRESS_BY_NAME[HOST_NAME]
