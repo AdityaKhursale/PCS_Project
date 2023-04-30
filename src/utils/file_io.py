@@ -9,7 +9,7 @@ def getFileId(fileName):
 
 
 def writeBinaryFile(filePath, fileContent):
-    if createDir(filePath):
+    if createDir(os.path.dirname(filePath)):
         with open(filePath, "wb") as f:
             f.write(fileContent)
 
