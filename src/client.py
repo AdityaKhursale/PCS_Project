@@ -1,9 +1,8 @@
 import re
 
 from distributed_fs import distributed_fs_pb2
-from utils.decorators import useDistributedFileSystemStub
 from utils import constants
-# TODO: Use better naming
+from utils.decorators import useDistributedFileSystemStub
 
 
 class Action:
@@ -20,13 +19,13 @@ class ActionPerformer:
         # pylint: disable=unused-argument
         helpMenu = """
             print help          help
+            list files          list
             create file         create <filename>
             read file           read <filename>
-            write to file       update <filename> < "text"
-            append to file      update <filename> << "text"
+            write to file       update <filename> < text
+            append to file      update <filename> << text
             delete file         delete <filename>
             restore file        restore <filename>
-            list files          list
             grant permissions   permit <filename> <hostname> <read/write>
             create node keys    keys
             exit client         exit
@@ -48,7 +47,7 @@ class ActionPerformer:
         stub = kwargs["stub"]
         resp = stub.ReadFile(distributed_fs_pb2.ReadRequest(
             filename=kwargs['filename']))
-        print(f"\n\n{resp.filecontent}\n\n")
+        print(f"\n{resp.filecontent}\n")
         return True
 
     @staticmethod
@@ -78,10 +77,10 @@ class ActionPerformer:
     def listFiles(**kwargs):
         stub = kwargs["stub"]
         resp = stub.ListFiles(distributed_fs_pb2.ListRequest())
-        print("\n\n")
+        print("\n")
         for filename in resp.files:
             print(f"{filename}")
-        print("\n\n")
+        print("\n")
         return True
 
     @staticmethod

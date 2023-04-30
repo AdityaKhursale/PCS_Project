@@ -5,13 +5,13 @@ import logging.handlers
 import os
 import yaml
 
-from utils import constants, file
+from utils import constants, fileIO
 
 
 class DirectoryEnsuredFileHandler(logging.handlers.RotatingFileHandler):
     def __init__(self, filename, mode='a', maxBytes=0, backupCount=0,
                  encoding=None, delay=False, errors=None):
-        file.createDir(os.path.dirname(filename))
+        fileIO.createDir(os.path.dirname(filename))
         super().__init__(filename, mode, maxBytes,
                          backupCount, encoding, delay, errors)
 

@@ -1,8 +1,8 @@
-from utils.network import isValidIpAddress
-from utils import constants
-
 import argparse
 import multiprocessing
+
+from utils import constants
+from utils.network import isValidIpAddress
 
 
 def parseArgs():
@@ -19,8 +19,6 @@ def parseArgs():
     parser.add_argument("--hostname", help="Host name",
                         type=str, required=True)
     return parser.parse_args()
-
-    return server
 
 
 def main():

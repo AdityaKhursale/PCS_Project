@@ -16,20 +16,14 @@ LOG_DIR = os.path.join("logs")
 
 # Assets
 
-ASSETS = "assets"
+ASSETS = os.path.join("assets")
 
 
 def setupGlobalConstants(address, host):
-    global dir_path
     global host_name
     global db_instance
     global ip_addr
-    global private_key_path
-    global public_key_path
 
     host_name = host
     ip_addr = address
-    dir_path = os.path.join(ASSETS, host_name)
-    private_key_path = os.path.join(dir_path, "private_key")
-    public_key_path = os.path.join(dir_path, "public_key")
     db_instance = DfsDB(host_name)
