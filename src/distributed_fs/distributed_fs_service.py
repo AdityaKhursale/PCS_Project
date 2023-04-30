@@ -1,8 +1,10 @@
 import base64
 import os
+import traceback
+from types import FunctionType
+from functools import wraps
 
 import grpc
-
 
 import distributed_fs.distributed_fs_pb2 as pb
 from distributed_fs.distributed_fs_pb2_grpc import \
@@ -13,7 +15,31 @@ from utils.misc import getLogger
 from utils.network import getNodesExcept
 
 
-class DistributedFileSystemService(DistributedFileSystemServicer):
+def wrapper(method):
+    @wraps(method)
+    def wrapped(*args, **kwargs):
+        try:
+            return method(*args, **kwargs)
+        except Exception as e:
+            args[0].logger.error(traceback.format_exc())
+            return pb.DummyErrorResponse()
+    return wrapped
+
+
+class SilentAndLogException(type):
+    def __new__(cls, classname, bases, classDict):
+        newClassDict = {}
+
+        for attrName, attr in classDict.items():
+            if isinstance(attr, FunctionType):
+                attr = wrapper(attr)
+
+            newClassDict[attrName] = attr
+
+        return type.__new__(cls, classname, bases, newClassDict)
+
+
+class DistributedFileSystemService(DistributedFileSystemServicer, metaclass=SilentAndLogException):
     def __init__(self, root, trashstore):
         super().__init__()
         self.root = root

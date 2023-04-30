@@ -129,3 +129,5 @@ message FileLockRequest {
 }
 
 message FileLockResponse { bool lockGranted = 1; }
+
+message DummyErrorResponse {}

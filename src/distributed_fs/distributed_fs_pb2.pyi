@@ -37,6 +37,10 @@ class DeleteResponse(_message.Message):
     status: str
     def __init__(self, status: _Optional[str] = ...) -> None: ...
 
+class DummyErrorResponse(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...
+
 class FileLockRequest(_message.Message):
     __slots__ = ["address", "fileId"]
     ADDRESS_FIELD_NUMBER: _ClassVar[int]
