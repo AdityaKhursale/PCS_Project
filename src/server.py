@@ -12,7 +12,6 @@ from utils.misc import getLogger
 
 
 class Server:
-    # pylint: disable=invalid-name
     def __init__(self, ip, port, host):
         self.ip = ip
         self.port = port

@@ -48,4 +48,4 @@ def removeFiles(dirname, pattern, raiseException=False):
                 os.remove(os.path.join(dirname, f))
     except FileNotFoundError as e:
         if raiseException:
-            raise (e)
+            raise e

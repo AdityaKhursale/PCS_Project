@@ -2,7 +2,7 @@ import os
 
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
-from utils import fileIO
+from utils import file_io as fileIO
 
 
 def createRsaKeyPair(bits=1024):

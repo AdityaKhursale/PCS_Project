@@ -1,9 +1,11 @@
+import socket
+
 from utils.constants import NETWORK_CFG
 
 
 def getNodes():
     nodes = []
-    with open(NETWORK_CFG, "r") as f:
+    with open(NETWORK_CFG, "r", encoding="utf-8") as f:
         for node in f.readlines():
             nodes.append(node.rstrip('\n'))
     return nodes
@@ -17,7 +19,6 @@ def getNodesExcept(node):
 
 
 def isValidIpAddress(ipAddress):
-    import socket
     try:
         socket.inet_aton(ipAddress)
         return True

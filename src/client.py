@@ -34,7 +34,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def createFile(**kwargs):
         stub = kwargs["stub"]
         stub.CreateFile(distributed_fs_pb2.CreateRequest(
@@ -42,7 +42,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def readFile(**kwargs):
         stub = kwargs["stub"]
         resp = stub.ReadFile(distributed_fs_pb2.ReadRequest(
@@ -51,7 +51,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def updateFile(**kwargs):
         stub = kwargs["stub"]
         overwrite = not re.search("<<", kwargs["options"])
@@ -64,7 +64,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def deleteFile(**kwargs):
         stub = kwargs["stub"]
         stub.DeleteFile(distributed_fs_pb2.DeleteRequest(
@@ -73,7 +73,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def listFiles(**kwargs):
         stub = kwargs["stub"]
         resp = stub.ListFiles(distributed_fs_pb2.ListRequest())
@@ -84,7 +84,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def restoreFile(**kwargs):
         stub = kwargs["stub"]
         stub.RestoreFile(distributed_fs_pb2.RestoreRequest(
@@ -93,7 +93,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def grantPermissions(**kwargs):
         stub = kwargs["stub"]
         hostname, permission = kwargs["options"].split()
@@ -104,7 +104,7 @@ class ActionPerformer:
         return True
 
     @staticmethod
-    @useDistributedFileSystemStub(constants.ip_addr)
+    @useDistributedFileSystemStub(constants.ADDRESS)
     def createNodeKeys(**kwargs):
         stub = kwargs["stub"]
         stub.CreateNodeKeys(distributed_fs_pb2.CreateNodeKeyRequest())

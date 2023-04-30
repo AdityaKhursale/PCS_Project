@@ -8,6 +8,15 @@ argument-naming-style=camelCase
 variable-naming-style=camelCase
 attr-naming-style=camelCase
 
+[MASTER]
+init-hook='import sys; sys.path.append("src")'
+
+[TYPECHECK]
+ignored-classes=distributed_fs.distributed_fs_pb2
+
+[BASIC]
+good-names-rgxs=^[_a-z][_a-z0-9]?$
+
 [MESSAGES CONTROL]
 
 disable=

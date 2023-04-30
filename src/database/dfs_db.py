@@ -83,7 +83,7 @@ class DfsDB:
     def __init__(self, dbName):
         self.dbName = dbName
         self.logger = getLogger(
-            "database", {"$HOSTNAME": constants.host_name})
+            "database", {"$HOSTNAME": constants.HOST_NAME})
         self.connect()
         self.createTables()
 

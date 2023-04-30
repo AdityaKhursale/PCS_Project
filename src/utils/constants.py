@@ -18,12 +18,18 @@ LOG_DIR = os.path.join("logs")
 
 ASSETS = os.path.join("assets")
 
+# global constants
+
+HOST_NAME = ""
+ADDRESS = ""
+DB_INSTANCE = None
+
+# pylint: disable=global-statement
+
 
 def setupGlobalConstants(address, host):
-    global host_name
-    global db_instance
-    global ip_addr
+    global HOST_NAME, ADDRESS, DB_INSTANCE
 
-    host_name = host
-    ip_addr = address
-    db_instance = DfsDB(host_name)
+    HOST_NAME = host
+    ADDRESS = address
+    DB_INSTANCE = DfsDB(HOST_NAME)
